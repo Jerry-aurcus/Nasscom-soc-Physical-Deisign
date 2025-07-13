@@ -525,6 +525,131 @@ After the logical cell placement blockage step our floorplan is done for placeme
 We will doing the floorplanning in openlane. For Floorplanning we require some switches which we will get in 'configuration' file in openlane.
 Inside the configuration there is a README file--> enter into that.
 
+<img width="1646" height="791" alt="Screenshot 2025-07-13 134453" src="https://github.com/user-attachments/assets/c73d0823-f5cb-40df-a0b6-5c01cfca8c61" />
+
+Here, you will find the variables needed for each stage, including global variables like the design name, synthesis variables, and others.
+Various switches are provided under floorplanning as shown.
+
+<img width="1278" height="769" alt="Screenshot 2025-07-13 112507" src="https://github.com/user-attachments/assets/111697db-e662-44be-859a-ca1e2e16af12" />
+
+Now we need to set the switches. For that, go back to the README file in the `floorplan.tcl` directory. There, you will see the default switches that are already set. For example, `(FP_IO_MODE): 1` means the I/O pins are positioned randomly but equidistant, while `0` means they are not positioned equidistant.
+
+<img width="1274" height="772" alt="Screenshot 2025-07-13 115528" src="https://github.com/user-attachments/assets/02a70220-a4dd-4349-9e9d-fd383b017382" />
+<img width="1272" height="766" alt="Screenshot 2025-07-13 115603" src="https://github.com/user-attachments/assets/7b2318cf-8bfb-45f7-9e2e-f5e48bd3589b" />
+
+As seen earlier in OpenLANE, the lowest priority is given to the system default (`floorplan.tcl`), followed by `config.tcl`, and the highest priority is given to the PDK variant (`sky130A_sky130_fd_sc_hd_config.tcl`).
+
+We will now run the floorplan by using the command: `run_floorplan`.
+
+<img width="1910" height="982" alt="Screenshot 2025-07-13 133313" src="https://github.com/user-attachments/assets/da37b74d-4a8e-4add-95bb-a1885e9e9a8c" />
+
+---
+## 7.Review floorplan files and steps to view floorplan
+---
+As we have run the floorplan, just like we did for synthesis we will go inside picorv32a and check for the present date when the floorplan file was created. Then we will go into the floorplan, and open the directory 'ioplacer.log' and we did the placements in input output.
+
+<img width="1642" height="795" alt="Screenshot 2025-07-13 140933" src="https://github.com/user-attachments/assets/fe04936a-5bca-426c-b0a7-79914d1c496c" />
+
+Inside the configuration, we will see the default `floorplan.tcl` file, which shows the default settings.
+To view how the floorplan looks, go to the generated folder by navigating to `floorplan → results → floorplan`. There, you will find a `.def` (Design Exchange Format) file. Open the `.def` file to see the floorplan.
+
+<img width="1913" height="946" alt="Screenshot 2025-07-13 142332" src="https://github.com/user-attachments/assets/72bde0ca-a710-4e13-bdd4-30098a72b640" />
+
+After opening the file, you will find various parameters, including the DIEAREA, which is given in database units.
+To convert it into microns, use the conversion:
+**1 micron = 1000 database units**.
+
+Given:
+`DIEAREA (0 0) (660685 671045)`
+
+Converted:
+**Width = 660.685 microns**,
+**Height = 671.045 microns**.
+<img width="1919" height="1079" alt="Screenshot 2025-07-13 155905" src="https://github.com/user-attachments/assets/516f41e5-22f7-4459-964b-04ab74f5e515" />
+
+To see the actual Floorplan, let us first open Magic by writing the command magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.floorplan.def
+We will see the layout in magic
+
+<img width="1919" height="1024" alt="Screenshot 2025-07-13 162306" src="https://github.com/user-attachments/assets/22461ca6-cfcf-454f-84b0-e50e8f68e20a" />
+<img width="1919" height="1079" alt="Screenshot 2025-07-13 162240" src="https://github.com/user-attachments/assets/795538cd-196c-4c24-9a4d-6533682ba0a6" />
+
+---
+## 8. Review floorplan layout in Magic
+--- 
+   In the image above, we can see that the layout is not centered. To center and fit it to the window:
+   → Full-screen the window
+   → Press `s`
+   → Press `v`
+   The layout will then fit within the window.
+
+To zoom in:
+→ First, left-click with the mouse
+→ Then right-click and press `z`
+
+To zoom out:
+→ Press `Shift + z`
+
+Since we selected `IO_MODE = 1`, the I/O pins are placed equidistant from each other.
+To select any pin, hover the mouse over the element and press `s` on the keyboard.
+
+<img width="1919" height="1079" alt="Screenshot 2025-07-13 163850" src="https://github.com/user-attachments/assets/7e040b9a-cb30-4b20-ab18-ecb142a2692c" />
+
+After selecting any pin, there is one more window tkcon, where we can get the information of the selected pin. Just type 'what' in that window.You will see metal3 which means horizontal.
+
+<img width="1895" height="1050" alt="Screenshot 2025-07-13 163947" src="https://github.com/user-attachments/assets/6c921fa1-883a-40a7-b6fd-b0d58fa192d6" />
+
+Similarly, we check for vertical pins we will get metal2 as mentioned in below image.
+
+<img width="1919" height="1079" alt="Screenshot 2025-07-13 164109" src="https://github.com/user-attachments/assets/c75e89bf-4499-4370-b32a-c9a52ca4c619" />
+
+Along with this, we can also see the Decaps (decoupling capacitors) arranged along the border or side rows.
+Then we have tap cells, which are used to avoid latch-up conditions in CMOS devices. They connect the n-well to VDD and the substrate to GND.
+
+<img width="1919" height="1079" alt="Screenshot 2025-07-13 164624" src="https://github.com/user-attachments/assets/ddaf30fb-455e-40dc-b22c-495a2390c491" />
+
+We also have the standard cell at the lower left corner which represents the AND, OR,etc logic gates.
+
+<img width="1919" height="1079" alt="Screenshot 2025-07-13 164224" src="https://github.com/user-attachments/assets/44dda5a1-0d5c-4ba1-a212-b00e761ade3c" />
+
+# Library Building and Placement
+
+---
+1. Netlist Binding and Initial Place Design
+---
+
+In placement and routing, the first step is to bind the physical netlist. In reality, logic gates do not have the exact shapes as shown in schematic diagrams; instead, they are represented as boxes with specific width and height defined during the design phase. At this stage, each component of the netlist is assigned proper physical dimensions.
+
+<img width="1899" height="1079" alt="Screenshot 2025-07-13 165630" src="https://github.com/user-attachments/assets/fae76f36-e25d-44d6-969d-6d7ec63ccbf4" />
+
+Now, the wires are removed and the elements are placed together. These elements are part of a shell called the **"Library."** The library contains timing and physical information. Basically, there are two types of libraries: one provides delay (timing) information, and the other provides shape and size (physical) information of the cells.
+
+The library includes:
+
+* Delay of a particular cell
+* Width and height
+* Specific operating conditions
+
+The library also offers various size options. For example, in the second case, gates are larger in size, resulting in lower resistance paths and hence faster operation. In the third case, the cells are even larger, making the operation even faster.
+
+<img width="1919" height="1079" alt="Screenshot 2025-07-13 165838" src="https://github.com/user-attachments/assets/a48f13fc-fd79-427d-a3a6-2c934eda324f" />
+
+Now next comes the Placement of the desired netlist on the floorplan. So we have the floorplan, the netlist and the shape of components in netlist.
+
+<img width="1919" height="1079" alt="Screenshot 2025-07-13 171932" src="https://github.com/user-attachments/assets/8bb5f22e-b941-484d-858b-67c533f42e3f" />
+
+Considering the floorplan along with the preplaced cells, we begin placing the flip-flops (FFs) by referring to the netlist. In the netlist, FF1 is close to `Din1` and FF2 is near `Dout1`, so we place them accordingly. They are positioned close to each other to minimize timing delay.
+
+In stage 2 of the logic, you can observe that all the FFs and gates are placed together.
+
+<img width="1918" height="1079" alt="Screenshot 2025-07-13 170332" src="https://github.com/user-attachments/assets/a5e6e64e-f870-4aa9-b22e-96726e15d967" />
+---
+## 2. Optimize Placement Using Estimated Wire-Length and Capacitance
+---
+   At this stage, we estimate the wire length and capacitance, and based on that, insert repeaters. For example, from `Din2` to `Dout3`, we estimate the wire length and the corresponding equivalent capacitance. Since the distance is large, both resistance and capacitance will be high, leading to signal loss.
+
+To prevent this, repeaters and buffers are placed at intermediate points to maintain **signal integrity**. However, this comes at the cost of additional area due to the insertion of multiple buffers and repeaters. Still, it is necessary to ensure proper signal transmission.
+
+In stage 1, the FFs are placed close to each other, so there is no need for repeaters (as shown below).
 
 
 
