@@ -714,6 +714,132 @@ Let me know if you'd like this added to a presentation or formatted into slides.
 
 
 
+LAB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Cell Design and Characterization Flows
+
+---
+### 1. Inputs for Cell Design Flow
+---
+
+In a typical IC design flow, **standard cells** serve as the fundamental building blocks for constructing digital logic. These cells are **pre-designed** and **pre-characterized**, meaning their logical function, timing, power, and physical layout information are already defined and stored in libraries.
+
+**What are Standard Cells?**
+Standard cells are a set of reusable logic components used in the **physical design** of integrated circuits. They ensure **design consistency**, **reliability**, and **optimization** for area, power, and performance.
+
+**Common Types of Standard Cells Include:**
+
+* **Logic Gates**: AND, OR, NAND, NOR, NOT, XOR, etc.
+* **Sequential Elements**: Flip-flops, Latches
+* **Combinational Buffers**: Inverters, Buffers
+* **Data Routing**: Multiplexers
+* **Special Purpose Cells**:
+
+  * **Tie-high/Tie-low cells**: Used to connect a net permanently to logic ‘1’ or ‘0’
+  * **Filler cells**: Used to fill empty spaces in rows to maintain DRC and power rail continuity
+
+These cells are provided as part of a **standard cell library**, which also includes files required for design automation, such as:
+
+* **.lib** (timing and power characterization)
+* **.lef** (layout abstract)
+* **.gds** (full layout data)
+* **.v** (Verilog model for functional simulation)
+
+These inputs are essential for downstream processes like **logic synthesis, placement, routing, and STA**.
+
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 12 45 56 AM" src="https://github.com/user-attachments/assets/72d31a55-11a3-44c3-9d70-f7e98cf562da" />
+
+These standard cells are placed in Libraries. A library has got cells with different functionality, and different sizes. Also cells with different threshold voltage(Vt).
+
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 12 46 45 AM" src="https://github.com/user-attachments/assets/8e8c7eb7-7968-470d-86e9-02e52886357b" />
+
+Let's take one particular inverter-->see the cell design flow, this inverter should be understood by a particular EDA tools.It has to be represented in form of shape, size and various cell design flow.
+Cell design flow is divided into 3 parts: 
+a)Inputs
+b)Design steps
+c)Outputs
+
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 1 08 41 AM" src="https://github.com/user-attachments/assets/bd03190b-f714-44a1-a149-61f4d6c03bb3" />
+
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 12 59 07 AM" src="https://github.com/user-attachments/assets/d7979a6e-760b-4de8-a13b-aff17b1d5649" />
+
+![Screenshot 2025-07-14 at 1 03 15 AM](https://github.com/user-attachments/assets/1f0af6f3-b17d-44ca-8409-5cd8d30b5df3)
+
+---
+## 2. Circuit Design Steps
+---
+
+Consider an example where a 'Library' is part of the inputs. The separation between the power rail and ground rail determines the cell height, and it is the responsibility of the cell library to ensure that this height is consistently maintained.
+
+Additionally, if the drive strength of a particular cell is high, it will be capable of driving longer wires effectively.
+
+![Uploading Screenshot 2025-07-14 at 1.15.54 AM.png…]()
+
+User Defined Specifications
+The top level of the cell decides at what level the chip will operate.
+
+The library developer has to decide the supply voltage.
+
+The library also has to decide the metal layer and pin locations.
+
+Design Steps
+After defining the inputs in the library, the design should adhere to these inputs.
+
+Design involves three steps:
+
+Circuit Design
+
+Implement the circuit.
+
+Model the PMOS and NMOS transistors to meet the library requirements.
+
+Output: CDL (Circuit Description Language).
+
+Layout Design
+
+Characterisation
+
+![Uploading Screenshot 2025-07-14 at 1.18.42 AM.png…]()
+
+---
+##4. Layout Design
+---
+The first step (implementation of the given function) is already discussed.
+
+The second step is to derive the PMOS and NMOS network graphs.
+
+This is done by Art of Layout – Euler’s Path and Stick Diagram.
+
+It gives the best layout and best performance.
+
+After generating the network graphs, we get the Euler’s Path – a path traced only once.
+
+Based on Euler’s Path, we draw the Stick Diagram.
+
+
+
+
+
+
+
+
+
+
 
 
 
