@@ -642,6 +642,7 @@ Considering the floorplan along with the preplaced cells, we begin placing the f
 In stage 2 of the logic, you can observe that all the FFs and gates are placed together.
 
 <img width="1918" height="1079" alt="Screenshot 2025-07-13 170332" src="https://github.com/user-attachments/assets/a5e6e64e-f870-4aa9-b22e-96726e15d967" />
+
 ---
 ## 2. Optimize Placement Using Estimated Wire-Length and Capacitance
 ---
@@ -652,12 +653,62 @@ To prevent this, repeaters and buffers are placed at intermediate points to main
 In stage 1, the FFs are placed close to each other, so there is no need for repeaters (as shown below).
 
 
+In stage 2 the FF1 is far from Din2 so we need buffers/repeaters in between to maintain the signal integrity. So we place 2 buffers in between.(as shown below)
+
+<img width="1680" height="1050" alt="Screenshot 2025-07-13 at 11 56 27 PM" src="https://github.com/user-attachments/assets/686c69ec-b614-46bf-b1b5-2a3ccb06c15d" />
 
 
+---
+## 3. Final Placement Optimization
+---
 
+In Stage 2, notice that there is no gap between the flip-flops (FFs) and the logic gates. This close placement is known as *abutment in placement optimization*. It is used for high-speed (high-frequency) circuits to minimize delay by avoiding wire routing between elements.
+Similarly, in Stage 3, a buffer needs to be inserted between Logic Gate 2 and FF2 because the distance between them is relatively large, which could introduce delay.
 
+![Uploading Screenshot 2025-07-14 at 12.02.16 AM.png…]()
 
+Coming to the last stage i.e 4th stage, it is the trickiest one, we placed 2 buffers in between, and also there is a criss-cross with other connections in between. So we need to deal with that also further.
 
+![Uploading Screenshot 2025-07-14 at 12.03.40 AM.png…]()
+
+Now we will try to do the Setip Timing Ananlysis, considering the clocks to be ideal that means giving clock to all the FFs at the same time.
+
+Here’s a clearer and more professional rewrite of both **Sections 4 and 5**, preserving all the original meaning and technical details:
+
+---
+## 4. Need for Libraries and Characterization
+---
+
+As we progress through the design flow — including Logic Synthesis, Floorplanning, Placement, and eventually Static Timing Analysis (STA) — an essential step we must address is **Clock Tree Synthesis (CTS)**.
+To achieve **zero skew**, flip-flops (FFs) across the chip should receive the clock signal at the same time. This synchronization is achieved using **clock buffers**, which help deliver the signal uniformly. This is where **libraries** become crucial.
+
+Across all design stages, one common element is the use of **logic gates or standard cells** (such as AND, OR, INVERTER, BUFFER, etc.). For Electronic Design Automation (EDA) tools to recognize and work with these gates, **library characterization** is necessary.
+Library characterization involves modeling the electrical behavior, timing, and other attributes of each gate/cell. This enables the tools to understand how a specific gate functions and interact with it correctly during synthesis, placement, routing, and timing analysis.
+
+---
+## 5. Congestion-Aware Placement Using RePlAce
+---
+
+At this stage, our focus is on achieving a **congestion-free placement**. Timing analysis will be considered afterward.
+As previously discussed, placement occurs in two phases:
+
+* **Global Placement**
+* **Detailed Placement**
+
+In **Global Placement**, standard cell positions are optimized, but **legalization** (ensuring legal, manufacturable positions) is not yet enforced.
+**Legalization** happens during **Detailed Placement**, where each standard cell is placed precisely within **standard cell rows**, with no overlaps and **abutment** (tight packing) between them. Timing considerations also come into play during legalization.
+
+When running `run_placement` in OpenLane:
+
+Global Placement** occurs first.
+
+   * The goal here is to **minimize wire length**, using the **HPWL (Half-Perimeter Wire Length)** metric.
+   * The primary objective is to **reduce congestion** and **converge the overflow**. Once the overflow is minimized, the placement is considered successful.
+
+To **visually verify placement**, navigate to the `results/placement` folder and look for the `placement.def` file.
+Open this file in **Magic** using the same technology file (`.tech`) that was used in earlier steps.
+
+Let me know if you'd like this added to a presentation or formatted into slides.
 
 
 
