@@ -817,7 +817,7 @@ Characterisation
 ![Uploading Screenshot 2025-07-14 at 1.18.42 AM.png…]()
 
 ---
-##4. Layout Design
+## 4. Layout Design
 ---
 The first step (implementation of the given function) is already discussed.
 
