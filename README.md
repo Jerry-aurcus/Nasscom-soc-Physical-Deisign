@@ -1004,6 +1004,34 @@ Transition Time and Slew Rate**
 <img width="1061" height="566" alt="Screenshot 2025-07-14 at 4 54 17 PM" src="https://github.com/user-attachments/assets/dd6e94af-0ad9-44df-be70-b97f2556eb35" />
 
 
+# **Sky130 Day 3 – Design Library Cell using Magic Layout and ngspice Characterization**
+
+## **Labs for CMOS Inverter ngspice Simulations**
+
+---
+## 1. IO Placer Revision
+---
+* As we have taken the example of an **inverter**, we will be **designing the cell**.
+
+* We'll **load the Magic file** into the **picorv32a**.
+
+* Till now, we have already done the **floorplan**, now we can also change the **core utilization factor**.
+
+* Open the **floorplan** that we got.
+
+* Earlier, we had set `FP_IO_MODE 1`, so we got **equidistant input-output pins**.
+
+* Now let's **change the configuration** and see what happens.
+
+* Inside `floorplan.tcl` we have:
+  `env(FP_IO_MODE) 1`
+
+* Now write in OpenLane as:
+  `set ::env(FP_IO_MODE) 2`
+
+* Then run the floorplan again using:
+  `run_floorplan`
+
 
 
 
