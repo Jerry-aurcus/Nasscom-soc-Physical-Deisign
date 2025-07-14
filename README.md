@@ -788,7 +788,8 @@ Consider an example where a 'Library' is part of the inputs. The separation betw
 
 Additionally, if the drive strength of a particular cell is high, it will be capable of driving longer wires effectively.
 
-![Uploading Screenshot 2025-07-14 at 1.15.54 AM.png…]()
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 1 15 54 AM" src="https://github.com/user-attachments/assets/b025bb91-3846-4ccb-ab94-5bc0029657c5" />
+
 
 User Defined Specifications
 The top level of the cell decides at what level the chip will operate.
@@ -814,10 +815,11 @@ Layout Design
 
 Characterisation
 
-![Uploading Screenshot 2025-07-14 at 1.18.42 AM.png…]()
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 1 18 37 AM" src="https://github.com/user-attachments/assets/1c0572bf-406e-4fe0-9ff0-a4504409bf9c" />
+
 
 ---
-## 4. Layout Design
+## 3. Layout Design
 ---
 The first step (implementation of the given function) is already discussed.
 
@@ -830,6 +832,192 @@ It gives the best layout and best performance.
 After generating the network graphs, we get the Euler’s Path – a path traced only once.
 
 Based on Euler’s Path, we draw the Stick Diagram.
+
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 4 33 09 PM" src="https://github.com/user-attachments/assets/be56a559-4fae-4fb9-a8d7-0425f3ce6a3f" />
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 4 10 33 PM" src="https://github.com/user-attachments/assets/cd450030-de4d-45c0-bcc5-f9fc652bef89" />
+
+is to convert the stick diagram into a proper layout adhering to the DRC rules. We can implement it in magic.(as shown below)
+
+<img width="1680" height="1050" alt="Screenshot 2025-07-14 at 4 13 17 PM" src="https://github.com/user-attachments/assets/a885d13c-6b5b-4ab3-8baf-61492d89f439" />
+
+Final Steps
+Extract parasitics (resistance and capacitance) from the layout.
+
+Perform characterisation in terms of timing.
+
+Layout design output is saved as:
+
+  -GDSII
+
+  -LEF
+
+Extracted SPICE netlist
+
+Characterisation
+This step provides output in the form of:
+
+  -Timing
+
+  -Noise
+
+  -Power information
+
+---
+## 4. Typical Characterisation Flow
+---
+
+To build the characterisation flow from the inputs, follow these steps:
+
+a) Read the model files
+
+b) Read the extracted SPICE netlist
+
+c) Recognize the behaviour of buffer
+
+d) Read the sub-circuit of inverter
+
+e) Attach the power sources
+
+f) Apply the stimulus for characterisation
+
+g) Provide the necessary output capacitors
+
+h) Provide the simulation command:
+ 
+  – For transition simulation → .tran
+  
+  – For DC simulation → .dc
+
+<img width="1031" height="599" alt="Screenshot 2025-07-14 at 4 40 31 PM" src="https://github.com/user-attachments/assets/761bcc5a-6b4f-4b9d-897c-23e055c5ae0f" />
+<img width="1026" height="634" alt="Screenshot 2025-07-14 at 4 40 49 PM" src="https://github.com/user-attachments/assets/dc36ac83-edf3-48df-8648-0f60bcc1fa44" />
+
+Next is to feed all these steps in characterisation software called GUNA.This software will generate timing,noise and power.libs outputs
+
+<img width="1037" height="462" alt="Screenshot 2025-07-14 at 4 41 01 PM" src="https://github.com/user-attachments/assets/e279fb44-0a6f-4407-95a4-befe7a7befd1" />
+
+
+---
+## General Timing Characterization Parameters
+---
+
+---
+## 1. Timing Threshold Definitions
+---
+
+* Understand the various **syntax and semantics** of:
+
+  * `timing.lib`
+  * `power.lib`
+  * `noise.lib`
+
+* This understanding is necessary for working with **GUNA software**.
+
+* Focus is on understanding the **timing threshold definitions** of the **waveform** itself.
+
+
+<img width="1026" height="606" alt="Screenshot 2025-07-14 at 4 41 21 PM" src="https://github.com/user-attachments/assets/56b1d11e-5e87-4a31-89f0-8d15934a8ece" />
+
+Waveform of output of 1st inverter is given as input to 2nd inverter.
+slew_low_rise_thr It is voltage level below which a rising signal is considered to have started it's transition. Or we can say that slew low rise threshold depicts the value close to 0.slew_low_rise_thr is typically 20% from bottom power supply.
+
+<img width="1040" height="595" alt="Screenshot 2025-07-14 at 4 41 32 PM" src="https://github.com/user-attachments/assets/c6989e13-bb81-4577-9978-ecdd4d7c9630" />
+
+slew_high_rise_thr It is typically 20% from top power supply
+
+<img width="1030" height="555" alt="Screenshot 2025-07-14 at 4 41 40 PM" src="https://github.com/user-attachments/assets/bb772335-f2f5-4dc0-8601-59e79c24c0d9" />
+
+slew_low_fall_thr
+
+<img width="1050" height="558" alt="Screenshot 2025-07-14 at 4 41 51 PM" src="https://github.com/user-attachments/assets/1cfb75c3-826b-4008-9c51-a397c673bb24" />
+
+slew_high_fall_thr
+
+<img width="1042" height="561" alt="Screenshot 2025-07-14 at 4 42 03 PM" src="https://github.com/user-attachments/assets/1df0903e-0702-43fa-9b70-27d27bcde63f" />
+
+
+General Timing Characterization Parameters
+
+1. Timing Threshold Definitions
+
+* Here we will understand various **syntex** and **symentix** of `timing.lib`, `power.lib`, and `noise.lib`.
+* This is necessary to understand the **GUNA** software.
+* We will try to understand the **timing threshold definitions** of the waveform itself.
+
+2. Other Definitions
+
+* Now the other definitions include **input waveforms**, taking the **input stimulus** and the **output of the first buffer**.
+* **`in_rise_thr`**: It tells the **delay from the given input**, to measure the **arrival time** of a **rising signal** at the **input pin** of a standard cell. It is taken when the input crosses **50%** of the signal.
+
+<img width="1044" height="528" alt="Screenshot 2025-07-14 at 4 42 16 PM" src="https://github.com/user-attachments/assets/a0b63c20-4f3a-40a0-9159-3a918e98b607" />
+
+out_rise_thr Just like input rise, output rise threshold is also 50% of the output waveform.
+
+<img width="1040" height="542" alt="Screenshot 2025-07-14 at 4 42 26 PM" src="https://github.com/user-attachments/assets/891d8a20-e842-4252-9a41-7a92d8d5ab42" />
+
+in_fall_thr
+
+<img width="1046" height="528" alt="Screenshot 2025-07-14 at 4 42 35 PM" src="https://github.com/user-attachments/assets/32d329b5-08ee-4348-af8a-cb120142a9bd" />
+
+out_fall_thr
+
+<img width="1058" height="554" alt="Screenshot 2025-07-14 at 4 42 53 PM" src="https://github.com/user-attachments/assets/ac65e7e0-de34-4f09-8a33-e3b0a0aae734" />
+
+
+---
+## 2. Propagation delay and transition time
+---
+   
+We have in&out_rise_thr and in&out_fall_thr. So if we want to calculate delay--> time(out_thr)-time(in_thr)
+
+<img width="1048" height="605" alt="Screenshot 2025-07-14 at 4 53 22 PM" src="https://github.com/user-attachments/assets/4adf2241-3172-470d-85b3-7c1804b35d97" />
+
+Lte's take an example, here the Red curve is input waveform and blue curve is output waveform taken from 2nd inverter.
+
+<img width="1047" height="591" alt="Screenshot 2025-07-14 at 4 53 34 PM" src="https://github.com/user-attachments/assets/234b9e1f-ec58-4e72-b79e-c2f30c1058b5" />
+
+Threshold Point Selection
+
+* If we shift the threshold points **above 50%**, then we will see that there is a **negative delay** as shown below.
+* A **negative delay** means **output arrived before the input**, so it is **not good**.
+* Therefore, **choosing a proper threshold point is very very important**.
+
+<img width="1044" height="593" alt="Screenshot 2025-07-14 at 4 53 44 PM" src="https://github.com/user-attachments/assets/8fa53dcd-14af-41e9-844a-f1ccc9b29175" />
+
+Another example of negative delay is given below, here the input slew is too high due to long wires.
+
+<img width="1038" height="597" alt="Screenshot 2025-07-14 at 4 53 56 PM" src="https://github.com/user-attachments/assets/ac8b1af4-330f-44b3-9002-389a7e1f5b02" />
+
+We can see that in_rise_thr point is much higher than out_fall_thr point which results ina negative delay.
+
+<img width="1044" height="566" alt="Screenshot 2025-07-14 at 4 54 06 PM" src="https://github.com/user-attachments/assets/137b19d3-5642-4a36-ac67-8e561ec14dfa" />
+
+Transition Time and Slew Rate**
+
+* Next we will understand the **transition time** which is given by:
+  → `time(slew_high_rise_thr) - time(slew_low_rise_thr)`
+  → Similarly for fall: `time(slew_high_fall_thr) - time(slew_low_fall_thr)`
+
+* Let's consider **20% of VDD** as **low value** and **80% of VDD** as **high value**.
+
+* So here comes the **slew rate**, i.e., **high-low** for **input and output characteristics**.
+
+<img width="1061" height="566" alt="Screenshot 2025-07-14 at 4 54 17 PM" src="https://github.com/user-attachments/assets/dd6e94af-0ad9-44df-be70-b97f2556eb35" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
