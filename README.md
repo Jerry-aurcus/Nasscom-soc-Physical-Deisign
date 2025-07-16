@@ -1038,6 +1038,325 @@ Transition Time and Slew Rate**
 
 
 
+LAB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+## 2. SPICE Deck Creation for CMOS Inverter
+---
+
+* Now we will be doing some **SPICE simulations** and deriving the **real-time MOSFETs**.
+
+* **1st step** is **SPICE deck** creation. It is the **connectivity information** about the **netlist**.
+
+* It has the **inputs provided for simulation**, **tap points** at which we'll take the outputs, and so on.
+
+* We will create the **SPICE deck** for the **complete netlist** with **PMOS** and **NMOS**.
+
+* In this case, we are looking at the **static behaviour** of the CMOS.
+
+* Next, we will define the **component values**, where:
+
+  * PMOS and NMOS are given **W/L values**
+  * **Output capacitance load** value is defined
+
+* (Although we know **PMOS should be wider** than NMOS, here we will take the **same values** for both.)
+
+
+<img width="772" height="818" alt="Screenshot 2025-07-15 at 5 56 12 PM" src="https://github.com/user-attachments/assets/8e111b99-a898-4143-a439-0bb7fe4b2159" />
+
+Component Values: The W/L ratios (width/length) of the PMOS and NMOS transistors are specified. For now, the same size is used for both.
+
+<img width="611" height="517" alt="Screenshot 2025-07-15 at 5 58 25 PM" src="https://github.com/user-attachments/assets/3a1a2d50-eeeb-418d-ade6-1f6c0e9e9752" />
+
+Identify Nodes: Nodes are the points between which components are connected. They are essential for defining the SPICE netlist.
+
+<img width="615" height="473" alt="Screenshot 2025-07-15 at 5 58 35 PM" src="https://github.com/user-attachments/assets/f316ae38-701c-4c0c-a2eb-08f8412efc4e" />
+
+Naming Nodes: Common node names include: in, Vss, Vdd, and out.
+
+<img width="617" height="562" alt="Screenshot 2025-07-15 at 5 58 45 PM" src="https://github.com/user-attachments/assets/91c61a5d-675d-4a7d-8be6-df28ebd4f40c" />
+
+Starting the SPICE Deck
+MOSFET Syntax in SPICE:
+
+<img width="641" height="552" alt="Screenshot 2025-07-15 at 5 58 59 PM" src="https://github.com/user-attachments/assets/669cd524-8114-489b-bc8b-e243e90ce6de" />
+
+<img width="644" height="567" alt="Screenshot 2025-07-15 at 5 59 10 PM" src="https://github.com/user-attachments/assets/d4162004-624c-4fde-82f8-4189afc38361" />
+
+M<name> <drain> <gate> <source> <bulk> <model_name> L=<length> W=<width>
+
+<img width="628" height="153" alt="Screenshot 2025-07-15 at 6 02 13 PM" src="https://github.com/user-attachments/assets/1066dd09-e9e1-4b26-b457-b4fa2de98f8a" />
+
+---
+## 3.SPICE simulation lab for CMOS inverter
+---
+
+Till now, we have described the connectivity information of the CMOS inverter. Next, we will define the connectivity of the other components, such as the load capacitor and voltage sources.
+
+
+<img width="587" height="331" alt="Screenshot 2025-07-15 at 6 04 52 PM" src="https://github.com/user-attachments/assets/9e9b6e65-eb28-40dd-b5d7-b9d20e1d9075" />
+
+Load Capacitor (Output Capacitance)
+
+<img width="642" height="558" alt="Screenshot 2025-07-15 at 6 05 17 PM" src="https://github.com/user-attachments/assets/997ada36-9679-4fdc-8f82-30a3cbd6b43d" />
+
+
+The load capacitor is connected between the out node and node 0 (ground).
+
+The value of the capacitor is 10fF.
+
+Cload out 0 10f
+
+Supply Voltage (Vdd)
+
+<img width="637" height="565" alt="Screenshot 2025-07-15 at 6 05 28 PM" src="https://github.com/user-attachments/assets/d36f4574-2a64-4d4f-ba4e-1af85ff9299f" />
+
+The Vdd source is connected between Vdd and node 0.
+
+The voltage value is 2.5V.
+
+Vdd Vdd 0 2.5
+
+
+<img width="644" height="545" alt="Screenshot 2025-07-15 at 6 05 37 PM" src="https://github.com/user-attachments/assets/84b25b2c-600b-4665-8682-37cfcc7dc46d" />
+
+The input voltage source is connected between Vin and node 0.
+The voltage is also 2.5V.
+Vin in 0 2.5
+
+
+These definitions complete the required component connections for simulating the CMOS inverter with proper input, power, and output load conditions.
+
+Now we need to add the simulation commands to perform a DC sweep. In this case, we're sweeping the input voltage Vin from 0V to 2.5V with a step size of 0.05V. This allows us to observe how Vout changes as Vin varies.
+
+DC Sweep Command
+
+<img width="635" height="156" alt="Screenshot 2025-07-15 at 6 06 02 PM" src="https://github.com/user-attachments/assets/bdb9a6b1-971f-4b07-b12c-94c9d46e0aae" />
+
+
+.dc Vin 0 2.5 0.05
+
+Vin → name of the voltage source to sweep
+
+0 → starting value
+
+2.5 → ending value
+
+0.05 → step size
+
+This command will simulate the behavior of the CMOS inverter across all input voltages from 0V to 2.5V and generate the corresponding output values, helping us analyze the VTC (Voltage Transfer Characteristic).
+
+Final step is to include the model files, which contain the complete description of NMOS and PMOS transistors.
+
+
+<img width="637" height="142" alt="Screenshot 2025-07-15 at 6 06 23 PM" src="https://github.com/user-attachments/assets/efbc5cb4-b2c3-4868-b785-8e671958f9fc" />
+
+<img width="641" height="290" alt="Screenshot 2025-07-15 at 6 06 39 PM" src="https://github.com/user-attachments/assets/20a78ab1-f9b8-4a24-82ef-abc7e1bba523" />
+
+Lets do the spice simulation for the following specifications
+
+
+<img width="640" height="82" alt="Screenshot 2025-07-15 at 6 06 48 PM" src="https://github.com/user-attachments/assets/387a7745-8e93-48fa-82c4-dfc17e1b6a8a" />
+
+The plot obtained is
+
+<img width="637" height="463" alt="Screenshot 2025-07-15 at 6 07 05 PM" src="https://github.com/user-attachments/assets/08f738eb-2592-4366-85bb-5a2f5c752967" />
+
+Now, we perform another simulation where the PMOS width is set to three times the NMOS width. After running the simulation with this updated sizing, we obtain the output graph as shown below.
+
+
+<img width="641" height="76" alt="Screenshot 2025-07-15 at 6 07 23 PM" src="https://github.com/user-attachments/assets/0a42fd47-a26a-4913-a8cb-7f15e706401e" />
+
+The plot obtained is
+
+<img width="640" height="487" alt="Screenshot 2025-07-15 at 6 07 36 PM" src="https://github.com/user-attachments/assets/d884182a-cfb0-48d5-a84c-3283bf2577dd" />
+
+The difference between the two graphs is that, in the second graph, the transfer characteristic lies exactly in the middle of the graph. In contrast, in the first graph, the transfer characteristic is shifted to the left of the center.
+
+---
+## 4. Switching Threshold Vm
+---
+
+* Previously, in the first case we took **Wn/Ln = Wp/Lp = 1.5**,
+  whereas in the second case we took **Wp/Lp > Wn/Ln**.
+
+* Clearly, we saw **waveform shift** in the second case.
+
+* Both have **different applications**.
+
+* Even though we changed the **width/length ratio**,
+  we saw the **graph is same** in both cases.
+
+* This shows that the **CMOS inverter is a robust device**.
+
+* The **behaviour of the inverter remains the same** despite the changes.
+
+* We will do the **Static Behaviour Evaluation** showing the **robustness** of the CMOS inverter.
+
+* The parameters which define the same are:
+
+<img width="613" height="278" alt="Screenshot 2025-07-16 at 7 11 47 PM" src="https://github.com/user-attachments/assets/b4775a4a-c6cb-4f31-ad91-3d548cda7310" />
+
+In this figure, we observe that at Vm ≈ 0.9V, the condition Vin = Vout is met. This point is critical for CMOS operation because at Vm, there is a high possibility that both the PMOS and NMOS transistors are partially turned on.
+
+<img width="594" height="415" alt="Screenshot 2025-07-16 at 7 12 54 PM" src="https://github.com/user-attachments/assets/39132c89-d0c6-42f8-920e-4c55ce42cb6b" />
+
+
+* When **both transistors conduct simultaneously**, it creates a **direct path from Vdd to Vss** (power to ground), resulting in **leakage current**.
+
+* This current can lead to **increased power consumption** and may affect **circuit reliability** if not properly controlled.
+
+* By comparing the **two graphs**, we gain a clear understanding of the **switching threshold voltage (Vm)** and how it plays a key role in defining the **operating region** and **power behavior** of a **CMOS inverter**.
+
+
+<img width="598" height="277" alt="Screenshot 2025-07-16 at 7 14 09 PM" src="https://github.com/user-attachments/assets/077a6670-c349-4c00-a102-b3d10b12953a" />
+
+
+* In the graph below, we can identify the **operating regions** of the **PMOS** and **NMOS** transistors at different points along the **transfer characteristic curve**.
+
+* The **direction of current flow** is different for each:
+
+  * For **NMOS**, current flows from **drain to source** (typically from **Vout to GND**).
+  * For **PMOS**, current flows from **source to drain** (typically from **Vdd to Vout**).
+
+* By analyzing the graph, we can determine at each region (**cutoff**, **linear**, **saturation**) whether the NMOS or PMOS is **conducting**, and in **what mode**.
+
+* This is helpful for understanding the **dynamic behavior** and **power dissipation** of the **CMOS inverter** across its **input voltage range**.
+
+<img width="595" height="413" alt="Screenshot 2025-07-16 at 7 16 05 PM" src="https://github.com/user-attachments/assets/57eb266f-7858-4ef4-ac43-079412af5b7f" />
+
+---
+## 5.Static and dynamic simulation of CMOS inverter
+---
+
+Now we will try to prove the robustness of CMOS Inverter with different W/L ratios in SPICE simulator and calculating the Vm.
+
+
+<img width="595" height="341" alt="Screenshot 2025-07-16 at 7 17 30 PM" src="https://github.com/user-attachments/assets/06a1c140-7d6a-49f8-b385-cb4c5886a0f2" />
+
+We now move forward by studying the effect of changing the PMOS width-to-length ratio (W/L) as an integer multiple of the NMOS (W/L). The goal is to evaluate the robustness of the switching threshold (Vm) under different sizing conditions.
+
+Earlier, we had already simulated the case where:
+
+(W/L of PMOS) / (W/L of NMOS) = 1
+
+<img width="594" height="489" alt="Screenshot 2025-07-16 at 7 18 26 PM" src="https://github.com/user-attachments/assets/84a32f0f-29a0-4c21-9ebd-2336e5768214" />
+
+Dynamic Simulation
+In this step, we shift from DC analysis to dynamic (transient) simulation.
+
+
+<img width="610" height="389" alt="Screenshot 2025-07-16 at 7 20 01 PM" src="https://github.com/user-attachments/assets/a9068549-ecb5-4ef7-906e-56be22fd0a07" />
+
+
+An input pulse is defined in the SPICE deck.
+This pulse waveform is applied to the CMOS inverter as the input signal, and we run a transient analysis using the .tran command.
+
+
+<img width="589" height="470" alt="Screenshot 2025-07-16 at 7 20 46 PM" src="https://github.com/user-attachments/assets/96acfdb3-0a8f-44ce-8e5f-c592f340a618" />
+
+
+Purpose of This Simulation
+Through this dynamic simulation, we can observe:
+
+Rise delay (low → high transition at output)
+Fall delay (high → low transition at output)
+How these delays change with variations in Vm (caused by different PMOS/NMOS sizing)
+In this setup, everything else remains constant—only the input waveform and the simulation type are changed. This helps us study how Vm impacts switching speed and symmetry, which are critical for timing analysis and circuit performance.
+
+To calculate the delay of a CMOS inverter, we need to plot both the input and output waveforms against time.
+
+<img width="594" height="461" alt="Screenshot 2025-07-16 at 7 21 31 PM" src="https://github.com/user-attachments/assets/5e8da80b-55af-45c8-8363-7643cca7e53e" />
+
+
+Delay Calculation Method
+Delay is measured from the point where the input crosses 50% of VDD to the point where the output crosses 50% of VDD.
+In this case, since VDD = 2.5V, the 50% threshold is 1.25V.
+Step-by-Step Process
+Zoom in on the waveform around the switching points.
+
+Note the timestamps where:
+
+Vin = 1.25V
+Vout = 1.25V
+Rise Delay
+Input is falling, output is rising.
+Delay = Time (Vout reaches 1.25V) − Time (Vin falls to 1.25V)
+Delay = 1.16276 ns − 1.01446 ns = 0.1483 ns
+
+<img width="588" height="454" alt="Screenshot 2025-07-16 at 7 22 19 PM" src="https://github.com/user-attachments/assets/0e505f1e-b771-44e4-92d5-a5597c88a817" />
+
+
+<img width="595" height="471" alt="Screenshot 2025-07-16 at 7 22 28 PM" src="https://github.com/user-attachments/assets/79d51c0c-64a9-4ca3-afc5-ff675165d9eb" />
+
+
+Fall Delay
+Input is rising, output is falling.
+Delay = Time (Vout falls to 1.25V) − Time (Vin rises to 1.25V)
+Delay = 2.07653 ns − 2.00486 ns = 0.07167 ns
+
+
+<img width="601" height="443" alt="Screenshot 2025-07-16 at 7 23 20 PM" src="https://github.com/user-attachments/assets/0a146cd3-fc54-42df-b29f-3d2ef624ebe5" />
+
+
+<img width="591" height="454" alt="Screenshot 2025-07-16 at 7 23 31 PM" src="https://github.com/user-attachments/assets/3b596963-1129-407d-a285-631b4a5c1ea5" />
+
+
+This analysis gives a clear view of how the inverter responds to input changes and helps in evaluating its timing performance.
+
+---
+## 6. Lab steps to git clone vsdstdcelldesign
+---
+
+What is git clone?
+
+The git clone command is used to download a GitHub repository (or any Git repo) to your local machine.
+
+Syntax of git clone
+
+git clone <repository_url>
+Example Usage
+
+Let’s say you want to clone the OpenLane repository from GitHub.
+
+Copy the URL of the repository (HTTPS link):
+
+https://github.com/The-OpenROAD-Project/OpenLane.git
+Open terminal or command prompt, and run:
+
+git clone https://github.com/The-OpenROAD-Project/OpenLane.git
+This command will:
+
+Create a folder named OpenLane
+Download all the code, branches, and history from the repo into that folder
+Optional: Clone into a Custom Folder Name
+
+git clone https://github.com/The-OpenROAD-Project/OpenLane.git my_openlane
+This clones the repo into a folder named my_openlane.
+
+After Cloning
+
+You can go into the cloned repo and start working:
+
+cd OpenLane
+To get the clone, copy the clone address from reporetery and paste in openlane terminal after the command git clone. this will create the folder called "vsdstdcelldesign" in openlane directory.
 
 
 
