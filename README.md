@@ -1353,6 +1353,7 @@ To get the clone, copy the clone address from reporetery and paste in openlane t
 
 
 
+lab
 
 
 
@@ -1367,13 +1368,139 @@ To get the clone, copy the clone address from reporetery and paste in openlane t
 
 
 
+## Inception of layout ̂CMOS fabrication process
+
+## 1. Create Active regions
+
+1. We will create a 16 mask CMOS process.
+Selecting a substrate- THe complete layout is laid onto a substrate,here we will select the most commonly used substrate i.e.a ptype Si substrate.
+
+
+<img width="1333" height="398" alt="Screenshot 2025-07-20 at 6 59 45 PM" src="https://github.com/user-attachments/assets/0b6873e9-c0f7-45e4-a329-b22635cba0b2" />
+
+
+
+2. Create the active regions for transistors- Active regions are the pockets where we will dope with n type.
+For this we need to create the isolation so that the pockets do not interact with each other, so we will grow a ~40nm SiO2 layer on the substrate.
+Next we will deposite a ~80nm layer of Si3N4 on top of SiO2.
+Now to make the active region pockets we will deposit the ~1micron layer of photoresist to create the masks.
+Where we want to create the wells there will put masks.
+And UV light drom the top.
+
+<img width="930" height="408" alt="Screenshot 2025-07-20 at 7 01 03 PM" src="https://github.com/user-attachments/assets/097df045-ce10-448b-9fa5-6819d943499b" />
+
+<img width="920" height="444" alt="Screenshot 2025-07-20 at 7 01 17 PM" src="https://github.com/user-attachments/assets/7dee705c-2532-48d0-9259-7dc7c8791184" />
+
+<img width="923" height="429" alt="Screenshot 2025-07-20 at 7 01 28 PM" src="https://github.com/user-attachments/assets/ff0db60c-7cdf-4ec2-b120-814b188d7e32" />
+
+<img width="928" height="424" alt="Screenshot 2025-07-20 at 7 01 39 PM" src="https://github.com/user-attachments/assets/000c4fc2-c715-4252-a942-e8c892790d15" />
+
+
+After this the extra regions that were being exposed to the UV light are washed away.
+
+<img width="911" height="512" alt="Screenshot 2025-07-20 at 7 02 35 PM" src="https://github.com/user-attachments/assets/ac4373fe-efd2-46a7-9eff-c390c458d29e" />
+
+
+Next step is to remove the mask and etch out the exposed area. The area which has photoresit will be saved from the etchant.
+
+<img width="920" height="429" alt="Screenshot 2025-07-20 at 7 02 56 PM" src="https://github.com/user-attachments/assets/195b4516-753e-4f1d-b385-69604d7eeb1c" />
+
+
+After this the resist is also removed and we place the substrate into high temperature furnace to grow the SiO2 layer on the exposed area.
+
+<img width="901" height="358" alt="Screenshot 2025-07-20 at 7 03 28 PM" src="https://github.com/user-attachments/assets/045c5d74-050c-4820-b3be-f56b4e4a3529" />
+
+
+Si3N4 was able to protect the areas underneath it, but couldn't protect the edges.
+
+<img width="938" height="373" alt="Screenshot 2025-07-20 at 7 03 50 PM" src="https://github.com/user-attachments/assets/d0a72d2d-2e20-418a-b06a-7ea80ede3faa" />
+
+
+Now the transistors which will be fabricated are now isolated, this process is called 'LOCOS' Which is 'local oxidation of silicon', and the area which protects transistor from communicating is called 'Bird's Beak'.
+
+<img width="958" height="402" alt="Screenshot 2025-07-20 at 7 04 23 PM" src="https://github.com/user-attachments/assets/ddff9558-8673-45ef-a72d-2b0e7e214842" />
+
+
+Also the Si3N4 will be stripped out using hot phosphoric acid, resulting in an isolation layer.
+
+
+<img width="934" height="361" alt="Screenshot 2025-07-20 at 7 04 50 PM" src="https://github.com/user-attachments/assets/ec386e26-5b7c-4260-ba6d-16e84aa23697" />
+
+
+
+## 2. Formation of N-well and P-well
+
+
+3)N-well and P-well Formation
+We cannot form both P-well and N-well simultaneously, as the doping requirements are different. Therefore, we must protect one region while forming the other using a photoresist layer.
+
+To form the P-well, we proceed as follows:
+
+First, deposit a photoresist layer on the wafer.
+Then, using Mask 2 and UV light exposure, we pattern the photoresist to define the areas where the P-well is to be created.
+The exposed regions are developed, opening windows for P-type dopant implantation while protecting the rest of the wafer.
+This selective process ensures controlled well formation in the desired regions. The same method is repeated later for N-well formation, using a different mask and dopant type.
+
+<img width="784" height="486" alt="Screenshot 2025-07-20 at 7 11 08 PM" src="https://github.com/user-attachments/assets/232a4b55-2b5b-4c7c-8767-a7ea01ead653" />
 
 
 
 
+Now, the area where we want to form the P-well is exposed after the photoresist is patterned. The mask is then removed, and the wafer is subjected to ion implantation using Boron as the dopant.
+
+The implantation energy is typically around 200 keV.
+This step introduces P-type dopants into the exposed silicon region, but at this stage, it is still referred to as a P-type implant.
+To activate the dopants and drive them deeper into the substrate, a high-temperature annealing process is performed. After annealing, the doped region becomes a fully formed P-well.
+
+
+<img width="808" height="404" alt="Screenshot 2025-07-20 at 7 11 31 PM" src="https://github.com/user-attachments/assets/eb991b80-d2ae-4b5c-8994-7c7fb39834c2" />
+
+
+A similar process is followed to form the N-well:
+
+* Apply a new photoresist layer and use Mask 3 to define the N-well regions.
+* Expose the wafer to UV light, pattern the photoresist, and develop it to expose only the areas where the N-well is to be formed.
+* Remove the photoresist from exposed regions.
+* Perform ion implantation using Phosphorus ions (N-type dopant), typically at an energy of around 200 keV.
+* Finally, carry out high-temperature annealing to activate the dopants and drive them into the silicon.
+This completes the N-well formation.
+
+<img width="802" height="379" alt="Screenshot 2025-07-20 at 7 12 43 PM" src="https://github.com/user-attachments/assets/8e60b5b4-2f60-4ab7-b88a-a480f35561e7" />
 
 
 
+Till now, the depth of the wells (P-well and N-well) has not been fully established. To achieve the desired depth and proper dopant distribution, the wafer is placed into a high-temperature furnace.
 
+This step is known as drive-in diffusion.
+
+During this process, the implanted dopants diffuse deeper into the silicon substrate.
+The depth and concentration of the wells are determined by the temperature and duration of this step.
+This completes the proper formation of P-well and N-well regions with defined depths, making them ready for active device fabrication.
+
+<img width="819" height="454" alt="Screenshot 2025-07-20 at 7 13 06 PM" src="https://github.com/user-attachments/assets/442b2efe-5878-4c1e-8614-777408f1e3e4" />
+
+<img width="815" height="474" alt="Screenshot 2025-07-20 at 7 13 18 PM" src="https://github.com/user-attachments/assets/84503973-1377-4db6-903b-368eb9728787" />
+
+<img width="808" height="376" alt="Screenshot 2025-07-20 at 7 13 28 PM" src="https://github.com/user-attachments/assets/39420609-ca84-4982-8e0e-b9670b9c56bf" />
+
+
+
+## 3. Formation of gate terminal
+
+
+4) Gate Formation
+The gate terminal is the most critical terminal of both PMOS and NMOS transistors, as it directly controls the threshold voltage (Vth) of the device.
+
+The threshold voltage is influenced by two main factors:
+
+Doping concentration in the channel region
+Oxide capacitance (which depends on oxide thickness and permittivity)
+Step 1: Channel Doping Adjustment
+To adjust the doping concentration in the channel and help control the threshold voltage, we perform channel doping as follows:
+
+Apply Mask 4 to define the gate region.
+Carry out ion implantation using Boron ions (a P-type dopant).
+The implantation is done at a lower energy, typically around 60 keV, so the dopants stay close to the surface.
+This step ensures the channel is properly doped before the actual gate structure is built, allowing for precise threshold voltage tuning.
 
 
