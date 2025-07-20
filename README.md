@@ -1033,28 +1033,18 @@ Transition Time and Slew Rate**
   `run_floorplan`
 
 
+![WhatsApp Image 2025-07-20 at 16 30 35](https://github.com/user-attachments/assets/3547fc65-4ba2-4a71-9581-53b7347ee27a)
+
+
+After running the command, check the updated floorplan. Now, the pins are stacked one above the other, reflecting the new I/O placement mode.
+
+
+![WhatsApp Image 2025-07-20 at 16 30 35 (1)](https://github.com/user-attachments/assets/2ed02fc8-2819-445a-a728-67fa0e3c8eb4)
 
 
 
 
-
-LAB
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![WhatsApp Image 2025-07-20 at 16 30 35 (2)](https://github.com/user-attachments/assets/c298c985-1ac4-40e3-90cd-3ad8e8eab0f0)
 
 
 ---
