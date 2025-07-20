@@ -1489,12 +1489,14 @@ This completes the proper formation of P-well and N-well regions with defined de
 
 
 4) Gate Formation
+   
 The gate terminal is the most critical terminal of both PMOS and NMOS transistors, as it directly controls the threshold voltage (Vth) of the device.
 
 The threshold voltage is influenced by two main factors:
 
-Doping concentration in the channel region
-Oxide capacitance (which depends on oxide thickness and permittivity)
+* Doping concentration in the channel region
+* Oxide capacitance (which depends on oxide thickness and permittivity)
+
 Step 1: Channel Doping Adjustment
 To adjust the doping concentration in the channel and help control the threshold voltage, we perform channel doping as follows:
 
