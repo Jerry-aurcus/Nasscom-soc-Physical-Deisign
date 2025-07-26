@@ -2222,13 +2222,257 @@ This process prepares the design, adds the custom `.lef` files to the flow, and 
 
 some results of synthesis
 
-![WhatsApp Image 2025-07-26 at 16 15 34 (7)](https://github.com/user-attachments/assets/5831f3e5-7b22-4a81-90be-45d5338fea4c)
-
 
 ![WhatsApp Image 2025-07-26 at 16 15 34 (6)](https://github.com/user-attachments/assets/e4e577da-7822-4016-b8a5-397be53ad87b)
 
+![WhatsApp Image 2025-07-26 at 16 15 34 (7)](https://github.com/user-attachments/assets/5831f3e5-7b22-4a81-90be-45d5338fea4c)
+
 
 we see a huge slack violation in the synthesis stage itself. So now we have to correct this slack violation.
+
+
+---
+## Introduction to Delay Tables & Power-Aware CTS
+---
+
+#### Power-Aware Clock Tree Synthesis (CTS)
+
+* In an **AND gate**, if the **enable pin** is set to logic `'1'`, the clock signal **propagates**.
+  If set to `'0'`, the clock is **blocked**.
+
+* In an **OR gate**, if the **enable pin** is set to logic `'0'`, the clock signal **propagates**.
+  If set to `'1'`, the clock is **blocked**.
+
+This **clock blocking mechanism** helps in **power saving** by preventing unnecessary clock switching in parts of the circuit during inactive periods, resulting in **reduced power consumption** in the clock tree.
+
+<img width="1165" height="684" alt="Screenshot 2025-07-26 at 4 54 02 PM" src="https://github.com/user-attachments/assets/3a1c9b15-017c-4381-9bc5-dfb579f61fc7" />
+
+Let's consider a clock tree where a buffer at the first stage is driving the load of two downstream buffers. In the clock gating technique, we replace this buffer with an AND gate to control the clock based on the enable signal.
+
+By doing this swap, we will now observe whether the other characteristics—such as delay, load driving capability, transition time, and power consumption—remain the same or change due to this modification. These impacts will be analyzed in the following steps.
+
+
+<img width="1164" height="430" alt="Screenshot 2025-07-26 at 4 55 20 PM" src="https://github.com/user-attachments/assets/b9b9fb80-fa0f-4ce2-852c-1fa9151287d4" />
+
+
+### Assumptions Before Swapping Buffer with Gate
+
+* **Input transition** and **load capacitance** remain the same before and after the swap.
+* The **driving strength** of the gate is assumed to be comparable to that of the buffer.
+* The **clock frequency** and **operating conditions** remain unchanged.
+* Only the **functional block** (buffer to AND gate) is replaced; the rest of the **clock tree structure** stays the same.
+* The added **gating logic** does not cause any **functional errors**; it only controls clock propagation using the enable signal.
+
+These assumptions ensure accurate analysis of the impact on **delay**, **transition**, and **power consumption** in the following steps.
+
+<img width="829" height="724" alt="Screenshot 2025-07-26 at 4 56 20 PM" src="https://github.com/user-attachments/assets/40b3c6b4-9a91-4cd4-aead-e7a2649b0f0d" />
+
+
+### Capacitance Assumptions
+
+* **C1 = C2 = C3 = C4 = 25 fF**
+* **Cbuf1 = Cbuf2 = 30 fF**
+
+### Total Capacitance at Each Node
+
+* **Node A** → 60 fF
+* **Node B** → 50 fF
+* **Node C** → 50 fF
+
+### Observations
+
+* The circuit has **2 levels of buffering**.
+* At each level, every node drives the **same load**.
+* **Identical buffers** are used within the same level.
+* The **output capacitance** of the buffers **varies** across the circuit.
+* Due to varying loads, the **input transition time** also varies.
+* This results in **multiple delay values** depending on different input transitions and output loads.
+
+### How is This Delay Captured?
+
+* Delay is captured using **delay tables**.
+  
+### Preparation of Delay Tables
+
+* A **single buffer** is extracted from the circuit.
+* The **input transition** is varied (e.g., 10 ps to 100 ps).
+* The **output load** is also varied.
+* **Delay values** are measured for each combination.
+* The data is organized into a **tabular format**, forming the **delay table**, which models delay based on input transition and output load.
+
+
+<img width="817" height="421" alt="Screenshot 2025-07-26 at 4 58 30 PM" src="https://github.com/user-attachments/assets/b8248613-456b-4419-b1fd-2a12cec068ff" />
+
+---
+## Delay Table Usage – Part 1
+---
+
+Let's take the example of the other buffers. Using the delay table, we can check how the delay of each buffer changes with different input transition and output load. As the load and transition are different for every buffer, delay will vary. The delay table captures this variation accurately by giving the delay corresponding to a particular input transition and load.
+
+
+<img width="825" height="226" alt="Screenshot 2025-07-26 at 4 59 27 PM" src="https://github.com/user-attachments/assets/b1e8e165-c83d-4b53-91a0-e308b2088b3c" />
+
+---
+## Delay Table Usage – Part 1
+---
+
+For a practical example:
+
+* **Input transition** for **buffer1** = **40 ps**
+* **Output capacitance** = **60 fF**
+* The **cell delay** in this case lies between **x9–x10**.
+* If a value is not directly available in the delay table, it is **extrapolated** from existing data.
+* Therefore, we can take a **range** for the delay.
+
+
+### Delay Table Usage – Part 2
+
+To calculate the delay of **buffer2**:
+
+* Assume **input transition** = **60 ps** (common for both buffers)
+* **Output load** = **50 fF**
+* Corresponding delay = **y15**
+
+The **total delay** from input to output:
+→ **x9' + y15** (wire delays are ignored)
+
+Since the **load is the same** at all endpoints, the **clock skew = 0**.
+If the load **varies**, then **skew ≠ 0**.
+
+### Lab Steps to Configure Synthesis Settings (Fix Slack and Include VSDINV)
+
+To modify the parameters of the custom cell:
+
+* Refer to the `README.md` file located in the **configuration folder** inside the **OpenLane** directory.
+* This file provides detailed information on the cell parameters, which will help in adjusting synthesis settings as required.
+
+  
+<img width="821" height="423" alt="Screenshot 2025-07-26 at 5 02 53 PM" src="https://github.com/user-attachments/assets/1087850f-f259-4844-b09b-1383bc0c5b94" />
+
+What is WNS and TNS? WNS (Worst Negative Slack): The worst (most negative) slack among all timing paths in the design. If WNS is negative, it indicates the most critical timing violation in the design. TNS (Total Negative Slack): The sum of all negative slack values across all violating timing paths in the design. It indicates the overall severity of the timing violations.
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (7)](https://github.com/user-attachments/assets/d84d9a61-491e-42e7-9b58-160377438fd1)
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (6)](https://github.com/user-attachments/assets/62f7c1b9-5cbd-4fa3-a2c8-565417e7d65f)
+
+---
+## Timing-Driven Synthesis to Repair Slack
+---
+
+We attempt to repair the **slack** by performing a **timing-driven synthesis**, balancing **delay** and **area**.
+
+From the `README.md` file, we see that the variable **`SYNTH_STRATEGY`** is used for timing-driven synthesis.
+
+* **Current Chip Area**: 147712.918400
+* **TNS (Total Negative Slack)**: -711.59
+* **WNS (Worst Negative Slack)**: -23.89
+
+
+
+### Commands to Execute in OpenLane
+
+1. **Prep the design again to update variables**:
+
+```tcl
+prep -design picorv32a -tag 24-03_10-03 -overwrite
+```
+
+2. **Add the newly created LEF files**:
+
+```tcl
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+add_lefs -src $lefs
+```
+
+3. **Display current value of SYNTH\_STRATEGY**:
+
+```tcl
+echo $::env(SYNTH_STRATEGY)
+```
+
+4. **Set new value for SYNTH\_STRATEGY**:
+
+```tcl
+set ::env(SYNTH_STRATEGY) "DELAY 3"
+```
+
+5. **Check whether SYNTH\_BUFFERING is enabled**:
+
+```tcl
+echo $::env(SYNTH_BUFFERING)
+```
+
+6. **Check current value of SYNTH\_SIZING**:
+
+```tcl
+echo $::env(SYNTH_SIZING)
+```
+
+7. **Set new value for SYNTH\_SIZING**:
+
+```tcl
+set ::env(SYNTH_SIZING) 1
+```
+
+8. **Check current value of SYNTH\_DRIVING\_CELL**:
+
+```tcl
+echo $::env(SYNTH_DRIVING_CELL)
+```
+
+9. **Run synthesis**:
+
+```tcl
+run_synthesis
+```
+
+<img width="796" height="409" alt="Screenshot 2025-07-26 at 5 21 29 PM" src="https://github.com/user-attachments/assets/266b5b48-3820-4c2b-9f70-fea82f97f083" />
+
+Now we see that the area has increased
+
+
+<img width="828" height="412" alt="Screenshot 2025-07-26 at 5 22 18 PM" src="https://github.com/user-attachments/assets/07a4e23c-fef7-4fb9-8275-fae5c9201f07" />
+
+and the slack is fixed
+
+![WhatsApp Image 2025-07-26 at 17 14 15 (1)](https://github.com/user-attachments/assets/8cb1483d-54fd-47d7-8264-801d6c40be51)
+
+
+### Floorplan and Placement Verification
+
+Once the synthesis has accepted our **custom inverter**, we proceed to run **floorplan and placement** to verify that the cell is correctly integrated into the **PnR flow**.
+
+Now that the custom inverter is successfully integrated into synthesis, execute the following command to run the floorplan:
+
+```tcl
+run_floorplan
+```
+
+![WhatsApp Image 2025-07-26 at 17 14 15 (2)](https://github.com/user-attachments/assets/1362d72b-3c58-4f29-8d96-c1c6157ea20b)
+
+
+
+### Manual Floorplanning (Alternative to `run_floorplan`)
+
+Due to an unexpected error with the `run_floorplan` command, we can manually perform the floorplanning steps using the following commands.
+
+These are derived from:
+
+* `Desktop/work/tools/openlane_working_dir/openlane/scripts/tcl_commands/floorplan.tcl`
+* The **Floorplan Commands** section in `Desktop/work/tools/openlane_working_dir/openlane/docs/source/OpenLANE_commands.md`
+
+These commands are internally called by `run_floorplan`:
+
+```tcl
+init_floorplan
+place_io
+tap_decap_or
+```
+
+Running these commands step-by-step can help bypass the error and continue the floorplanning process manually.
+
+
+
 
 
 
