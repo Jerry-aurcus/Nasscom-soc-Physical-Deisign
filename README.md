@@ -1799,6 +1799,150 @@ We will now check what's there inside the spice file.
 
 Let us try to read the spice deck.
 
+![WhatsApp Image 2025-07-26 at 13 35 53 (2)](https://github.com/user-attachments/assets/c5807e5f-b50f-46f4-ac80-dc6703bd814b)
+
+We need to take the dimensions as the dimension of grid in spice model that we have extracted. SO we will edit the values in SPICE deck according to what mentioned
+
+
+![WhatsApp Image 2025-07-26 at 13 35 53 (1)](https://github.com/user-attachments/assets/41a1e6e0-a19f-420c-9724-4642e1ca2c18)
+
+Also include the pmos and nmos files which are there in the libs folder. Use command .include ./libs/pshort.lib for PMOS and .include ./libs/nshort.lib command for NMOS.
+
+![WhatsApp Image 2025-07-26 at 13 35 53 (3)](https://github.com/user-attachments/assets/6f6e5588-633d-43eb-b5e3-cb9a337131b3)
+
+Now make the definition for the supply voltage VDD VPWR 0 3.3V , VSS VGND 0 0V, and Input files Va A VGND PULSE(0v 3.3V 0 0.1ns 2ns 4ns). Also add the command .tran 1n 20n, .control , run,.endc,.end.
+Also add the model files of nmos and pmos.
+
+
+![WhatsApp Image 2025-07-26 at 13 35 53 (4)](https://github.com/user-attachments/assets/23bd9299-b58a-49fb-bebc-e206f80f86ab)
+
+Now our SPICE deck is ready, run ngspice sky130_inv.spice.
+
+
+![WhatsApp Image 2025-07-26 at 13 35 53 (8)](https://github.com/user-attachments/assets/95e51807-40e4-4034-a948-36d72e33ace6)
+
+Now to plot the graph: plot y vs time a.
+
+![WhatsApp Image 2025-07-26 at 13 35 54](https://github.com/user-attachments/assets/fe73df80-eae4-4c8a-bd38-b3fe68cfa6e4)
+
+we can see some spikes. So we will load the spice file again, C3 change 0.24fF to 2fF.Again run ngspice
+
+![WhatsApp Image 2025-07-26 at 13 35 53](https://github.com/user-attachments/assets/3a9a13aa-4476-4ff1-a205-a8c763596361)
+
+![WhatsApp Image 2025-07-26 at 13 35 54 (1)](https://github.com/user-attachments/assets/2aaeb7ca-8d51-4468-a3a0-38e3efbf792c)
+
+---
+## 2.Lab steps to characterize inverter using sky130 model files
+---
+
+We need to find different parameters; 'rise tran', 'fall tran', 'propagation delay', 'fall cell delay'
+a) rise tran-time taken by o/p to transit from 20% of VDD to 80% of VDD.
+
+<img width="298" height="44" alt="Screenshot 2025-07-26 at 1 51 13 PM" src="https://github.com/user-attachments/assets/31950cc9-d671-4ca0-98b4-1be27733f0a6" />
+
+<img width="277" height="31" alt="Screenshot 2025-07-26 at 1 51 25 PM" src="https://github.com/user-attachments/assets/e6d2a220-7e5b-4dec-9568-1fec9266d978" />
+
+The rise time=(2.245-2.181)ns=64ps
+
+b) fall time-time taken by o/p to transit from 80% of VDD to 20% of VDD.
+
+<img width="316" height="65" alt="Screenshot 2025-07-26 at 1 51 35 PM" src="https://github.com/user-attachments/assets/1fd5c0ed-264b-4c41-8b5a-83c07eb9734f" />
+
+the fall time=(8.01307-4.052)ns=3.96ns
+
+c)cell rise delay/propagation delay-time difference between 50% of i/p and 50% of o/p when output is rising.
+
+<img width="283" height="74" alt="Screenshot 2025-07-26 at 1 51 44 PM" src="https://github.com/user-attachments/assets/241a97ce-b3b3-43dc-989c-82b64b11bae8" />
+
+The cell rise delay=(2.21036-2.1496)ns=60.76ps
+
+d)cell fall delay-time difference between 50% of i/p and 50% of o/p when output is falling.
+
+<img width="264" height="66" alt="Screenshot 2025-07-26 at 1 51 54 PM" src="https://github.com/user-attachments/assets/4d7b046d-51d4-4a35-95f9-a33e23a62115" />
+
+The cell fall delay=(4.077-4.04988)ns=27.2ps
+
+Therefore, we successfully have done the process calculations and characterize our inverter. Next we will create a LEF file and plugin the LEF file into picorv32a.
+
+---
+## 3.Lab introduction to Magic tool options and DRC rules
+---
+
+We need to understand the DRC rules.
+For this we can go to website: http://opencircuitdesign.com/ , and learn about Magic tool and various DRC rules.
+To know about skywater130 pdks: https://www.skywatertechnology.com/sky130-open-source-pdk/.
+Github repository for skywater-pdks: https://github.com/google/skywater-pdk.
+
+
+![WhatsApp Image 2025-07-26 at 13 59 32](https://github.com/user-attachments/assets/3c1a7883-1d75-46d6-adcc-c179cf7dcd55)
+
+![WhatsApp Image 2025-07-26 at 13 59 32 (1)](https://github.com/user-attachments/assets/e21e264a-b646-47ca-905c-0776f56d7982)
+
+Do ls -al to list down what is there inside.
+There is a .magicrc directory in this, open it using vim .magicrc.It is the starup for magic, it verifies the technology file for magic.Although not suggested to make any changes in this directory.
+
+![WhatsApp Image 2025-07-26 at 13 59 32 (2)](https://github.com/user-attachments/assets/5925d599-be6e-49fb-82ce-f121dfe19aa0)
+
+---
+## 5.Lab introduction to Magic and steps to load Sky130 tech-rules
+---
+
+Use the command below to open the Magic tool with improved graphics:
+
+magic -d XR &
+After Magic opens, go to the File menu and select Open, then choose the file:
+
+met3.mag
+This file contains different layout patterns, each associated with various DRC violations, represented as rule numbers. Each number corresponds to a specific design rule being violated in that region of the layout.
+
+![WhatsApp Image 2025-07-26 at 13 59 32 (1)](https://github.com/user-attachments/assets/7a0c7fb3-3c1e-426c-b641-fa22f8fa31f5)
+
+
+These rule numbers can be found in the Google-Skywater PDK documentation, which provides detailed explanations of each design rule, including layer specifications, spacing, width, enclosure, and other constraints. The reference for these rules is available at:
+
+https://skywater-pdk.readthedocs.io/en/main/rules/periphery.html
+
+<img width="821" height="410" alt="Screenshot 2025-07-26 at 2 22 25 PM" src="https://github.com/user-attachments/assets/0dbce8e3-6c7c-4846-af03-d1cc28af0f21" />
+
+Now select any layout area and check the DRC violations using the "Why" option in the Tkcon window. This command will display the reason for the DRC error, along with the corresponding rule number and a brief description of the violation.
+
+
+![WhatsApp Image 2025-07-26 at 13 59 33 (1)](https://github.com/user-attachments/assets/0bc94d22-ba3d-4081-bd1c-56f01d267bcd)
+
+
+<img width="830" height="411" alt="Screenshot 2025-07-26 at 2 23 56 PM" src="https://github.com/user-attachments/assets/498fb76b-39f3-42be-a815-ce3ea1762d56" />
+
+To viualze metal 3 and vias, select a blank area in the layout window. Hover the mouse pointer over the Metal3 contact icon, then press the 'p' key to pick that icon. Then execute the following command in the Tkcon tab:
+```tcl
+cif see VIA2
+```
+A group of black squares will appear inside the selected area. These represent the VIA2 layer, which indicates the vias connecting Metal2 to Metal3.
+
+
+![WhatsApp Image 2025-07-26 at 13 59 33 (2)](https://github.com/user-attachments/assets/e8008a96-e5be-432e-8a50-a42e72dfac12)
+
+---
+## 6.Lab exercise to fix poly.9 error in Sky130 tech-file
+---
+
+Now, open the poly.mag file in the Magic tool using the following command in the Tkcon terminal:
+```tcl
+load poly.mag
+```
+This will load the poly layout, which can then be analyzed or edited further as required.
+
+![WhatsApp Image 2025-07-26 at 13 59 33 (3)](https://github.com/user-attachments/assets/a3d244a5-88b7-427c-a9fa-70a7f3f0aecf)
+
+Now consider the rule poly.9 and refer to the Google-Skywater PDK documentation to understand the details of this rule.
+The rule poly.9 in the Google‑SkyWater PDK specifies:
+
+![WhatsApp Image 2025-07-26 at 13 59 33 (4)](https://github.com/user-attachments/assets/fea444ef-3cc0-41fe-9858-992d07886620)
+
+
+
+
+
+
 
 
 
