@@ -1938,18 +1938,191 @@ The rule poly.9 in the Google‑SkyWater PDK specifies:
 
 ![WhatsApp Image 2025-07-26 at 13 59 33 (4)](https://github.com/user-attachments/assets/fea444ef-3cc0-41fe-9858-992d07886620)
 
+<img width="829" height="417" alt="Screenshot 2025-07-26 at 3 33 22 PM" src="https://github.com/user-attachments/assets/1c51281b-f594-469c-9827-9b6b8e59b574" />
+
+Search for 'poly.9' in the sky130A.tech file. You will see a few DRCs but apparently there are no attempts to fix DRCs associated to distance between polyresistor to poly. So we will add these DRCs manually. Apply the necessary corrections to the 'poly.9' rule in both sections to resolve the DRC violation.
+
+
+![WhatsApp Image 2025-07-26 at 13 59 33 (5)](https://github.com/user-attachments/assets/ea94f437-d840-4e76-8e09-b2741b480b3f)
+
+we can see that the distance between npolyres and poly is 0.21u and as per the poly.9 DRCs checks any distance below 0.42u should viloate the rule so its clear that there are no DRCs check rules for distance between polyres and poly and hence we add them manually. below are the pictures showing the additions to sky130A.tech
+
+
+![WhatsApp Image 2025-07-26 at 13 59 33 (6)](https://github.com/user-attachments/assets/1134a2c1-5e50-4bef-bb86-c86dc2a30947)
 
 
 
+---
+## Sky 130 Day 4- Pre Layout timing analysis and importance of good clock tree
+---
+
+Timing Modelling using Delay Tables
+
+Lab Steps: Converting Grid Info to Track Info
+
+Up to this point, we've completed the **floorplanning** and **placement** phases. We also have the `.mag` file and have learned how to extract its **SPICE model** for characterization.
+
+However, for **placement and routing** in OpenLane, we do not need the entire `.mag` file. What is required are only the following:
+
+* Inner and outer boundaries
+* Power and ground rails
+* Input and output ports
+
+This is where the **LEF (Library Exchange Format)** file becomes important. The LEF file serves to **protect intellectual property (IP)** by including only the physical layout information necessary for placement and routing—without any internal transistor-level details.
+
+Our next goal is to **extract the LEF file** from the `.mag` file. Once we have the LEF, it will be integrated into the **picorv32a** flow.
+
+Guidelines for Creating Standard Cells
+
+There are specific design rules to follow while creating standard cells:
+
+1. **Ports Alignment**:
+   All **input and output ports** must be placed at the **intersection of vertical and horizontal routing tracks**.
+
+2. **Cell Dimensions**:
+
+   * The **width** of the standard cell must be an **odd multiple** of the **horizontal track pitch**.
+   * The **height** must be an **odd multiple** of the **vertical track pitch**.
+
+What is a Track?
+
+To understand what a **track** is, navigate to the following path:
+
+```
+openlane_working_dir/pdks/sky130A/libs.tech/openlane/sky130_fd_sc_hd/
+```
+
+In this directory, you'll find a file named `tracks.info`. This file defines the routing tracks—essentially, **grid lines** on which metal layers are allowed to route signals. These tracks dictate where wires can be legally placed and where pins should align in the design.
 
 
+![WhatsApp Image 2025-07-26 at 15 46 02 (1)](https://github.com/user-attachments/assets/13f522da-b19e-4553-8e81-562ba53a864c)
+
+![WhatsApp Image 2025-07-26 at 15 46 02 (2)](https://github.com/user-attachments/assets/aa0a8eb7-5e8c-47db-8df6-3da9e3bc95ff)
+
+![WhatsApp Image 2025-07-26 at 15 46 02 (3)](https://github.com/user-attachments/assets/0aa009d1-85cb-4a40-b860-4d5b660a530c)
 
 
+![WhatsApp Image 2025-07-26 at 15 46 02 (4)](https://github.com/user-attachments/assets/98d85db1-168e-4ca8-b703-277450ed1081)
 
 
+In the `tracks.info` file, the entry:
+
+```
+li1 x 0.23 0.46
+```
+
+indicates that for the **li1** metal layer:
+
+* The **horizontal track offset** is **0.23** units.
+* The **horizontal pitch** (spacing between tracks) is **0.46** units.
+
+Similarly:
+
+```
+li1 y 0.23 0.46
+```
+
+means:
+
+* The **vertical track offset** is also **0.23** units.
+* The **vertical pitch** is **0.46** units.
+
+According to standard cell design guidelines, **input and output ports** must be placed at the **intersection of the horizontal and vertical tracks** of the **li1** layer, because port definitions are typically made using the `li1` metal.
+
+To visually verify these tracks in **Magic** layout editor:
+
+* Press the `g` key to enable the **grid view**.
+* Zoom in on the layout.
+* You'll observe small square boxes appearing—these represent the **track intersections** and serve as alignment guides for placing ports and drawing metal routes accurately.
 
 
+![WhatsApp Image 2025-07-26 at 15 46 03](https://github.com/user-attachments/assets/8fb869d1-c5c5-41e2-9232-b9f2c017db4e)
 
+Next, we align this grid with the track pitch values (offset = 0.23, pitch = 0.46) to verify whether the ports A and Y are correctly placed at the intersections of the horizontal and vertical tracks of the li1 metal layer.
+
+Now, open the Tkcon window and, using the reference from the track.info file, set the grid according to the given offset and pitch values. The commmands are shown in the picture below.
+
+![WhatsApp Image 2025-07-26 at 15 46 03 (1)](https://github.com/user-attachments/assets/f16535b7-1181-4ee9-a0c6-ecb96eccc2db)
+
+
+![WhatsApp Image 2025-07-26 at 15 46 03 (2)](https://github.com/user-attachments/assets/73d7d1d1-8209-48d1-ba99-c51410fed83e)
+
+
+so the routing of li1 layer can only happen along this grid as shown above. we can also see that the input and output port is at the intersection of horizontal and vertical metal layer.
+
+
+![WhatsApp Image 2025-07-26 at 15 46 02](https://github.com/user-attachments/assets/bc146853-3bec-4d44-bc12-cdf8c339772a)
+
+The intersection ensures that the routing can connect to the port from both the horizontal and vertical directions effectively. Now, we can observe that the ports are placed exactly at the intersection of the tracks, satisfying the first requirement. Additionally, within the cell boundaries, 3 grid boxes are covered, which confirms that the second requirement related to the cell width being an odd multiple of the track pitch is also satisfied.
+
+
+---
+## Lab Steps to Convert Magic Layout to Standard Cell LEF
+---
+
+Port Class
+
+Defines the direction of the port:
+
+* **INPUT** – The port is an input.
+* **OUTPUT** – The port is an output.
+* **INOUT** – The port is bidirectional (can act as both input and output).
+
+Port Use
+
+Defines the functional purpose of the port:
+
+* **SIGNAL** – Regular signal port (input/output/inout).
+* **POWER** – Power supply port (e.g., VDD).
+* **GROUND** – Ground port (e.g., VSS).
+* **CLOCK** – Clock signal port.
+* **ANALOG** – Analog signal port (if applicable).
+
+
+![WhatsApp Image 2025-07-26 at 15 59 52 (1)](https://github.com/user-attachments/assets/a5210691-1430-45f3-b12f-4c8fe7b43c56)
+
+After these parameters are set (which is already configured for us), we are now ready to extract the .lef file from the .mag file.
+
+before we extract lets give this cell a coustom name. Right now the cell name is sky130_inv. follow the below image.
+
+![WhatsApp Image 2025-07-26 at 15 59 52 (2)](https://github.com/user-attachments/assets/07363a72-e4ae-4fe8-b540-c0e66c7bbc90)
+
+
+![WhatsApp Image 2025-07-26 at 15 59 52 (3)](https://github.com/user-attachments/assets/ab0fe25d-bfe3-450e-9f28-2c7c62fede09)
+
+
+Now, open the layout file in Magic using the following command:
+```
+magic -T sky130A.tech sky130_vsdinv.mag &
+```
+```
+To extract the .lef file, enter the following command in the Tkcon window:
+```
+lef write
+
+
+![WhatsApp Image 2025-07-26 at 15 59 52 (4)](https://github.com/user-attachments/assets/34f2cabc-361e-459e-9a20-0d6af975db3a)
+
+
+![WhatsApp Image 2025-07-26 at 15 59 52 (5)](https://github.com/user-attachments/assets/c51adcce-b5ac-41bd-850b-0ab0d9c4a467)
+
+
+![WhatsApp Image 2025-07-26 at 15 59 52 (6)](https://github.com/user-attachments/assets/26c09d0b-bc31-4fc7-abbe-060664b34ca5)
+
+This will generate the .lef file in the vsdstdcellsdesign directory. You can verify its creation by using the command:
+```tcl
+ls -ltr
+```
+
+![WhatsApp Image 2025-07-26 at 15 59 52 (7)](https://github.com/user-attachments/assets/b6a8ee8c-d580-4531-87d7-e98c449df404)
+
+The contents of the .lef file generated is shown below
+
+
+![WhatsApp Image 2025-07-26 at 15 59 52 (8)](https://github.com/user-attachments/assets/b852c4ee-05d9-44d4-b6e3-3c427e889bd1)
+
+
+![WhatsApp Image 2025-07-26 at 15 59 52](https://github.com/user-attachments/assets/338d5ec7-311d-4f3d-af4b-59f05d46c944)
 
 
 
