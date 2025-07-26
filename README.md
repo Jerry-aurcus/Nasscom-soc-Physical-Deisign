@@ -1731,6 +1731,95 @@ Finally, we will use Mask16 to drill out the final contacts outside.
 
 <img width="818" height="565" alt="Screenshot 2025-07-26 at 12 15 20 PM" src="https://github.com/user-attachments/assets/034642ad-d70c-498a-bdcb-56902b325da9" />
 
+---
+8.Lab introduction to Sky130 basic layers layout and LEF using inverter
+---
+
+The layers which we see here are required for basic CMOS inverter.The above one is PMOS and below is NMOS, Red line is Polysilicon.
+On the riight side we see color palatte which shows the layers.
+In skywater130A the first layer is local interconnect layer which is shown by light blue colour, the purple colour is Metal 1, pink color is Metal 2, n well is shown by solid slanting dashed lines
+
+
+<img width="829" height="392" alt="Screenshot 2025-07-26 at 1 23 36 PM" src="https://github.com/user-attachments/assets/8cdb2d36-2cd8-45f5-86e8-73c24dcea591" />
+
+We know when a poly crosses n-diffusion it's an NMOS and similarly when a ploy crosses p-diffusion it's a PMOS.
+We can check this if it holds true or not by selecting that part and type 'what' on tkcon.
+
+
+![WhatsApp Image 2025-07-26 at 13 20 33 (1)](https://github.com/user-attachments/assets/e5bc6655-0b45-406b-9fce-efb6174199c3)
+
+Similarly we can do for PMOS as well.
+
+Now to check if the PMOS drain is connected to NMOS drain, in magic press s three times after placing the cursor over drain.
+
+![WhatsApp Image 2025-07-26 at 13 20 33](https://github.com/user-attachments/assets/c2997a59-c1e4-4114-b72b-afbfd3e9d242)
+
+
+Also in CMOS the source of PMOS is connected to VDD and source of NMOS is connected to GND.
+
+![WhatsApp Image 2025-07-26 at 13 20 34](https://github.com/user-attachments/assets/aa0fc346-2eef-4f73-a687-52f3f276b5fd)
+
+<img width="579" height="525" alt="Screenshot 2025-07-26 at 1 25 43 PM" src="https://github.com/user-attachments/assets/15254865-4530-4542-aa42-44f1bdb5b572" />
+
+---
+## 9.Lab steps to create std cell layout and extract spice netlist
+---
+
+The CMOS inverter we see is being taken from the repository https://github.com/nickson-jose/vsdstdcelldesign Also, we need to ensure the final design needs to be DRC(design rule check) clean.
+How to know the logical involved in formation of inverter? FOr that we will extract SPICE and do SPICE simulations in ngspice.
+For this we will go to tkcon, and see where we are by pwd, then we will type extract all.
+
+
+![WhatsApp Image 2025-07-26 at 13 27 51 (1)](https://github.com/user-attachments/assets/06842a0c-dcf7-4197-b765-fcd633ebb00a)
+
+We will see if that has been extracted. So sky130A_inv_ext is present
+
+![WhatsApp Image 2025-07-26 at 13 27 51 (2)](https://github.com/user-attachments/assets/f23b9a02-5360-41b5-a32d-e105f277e2f1)
+
+Next we will use this .ext file to create our SPICE file which will be used in ngspice tool.In tkcon we will write the command ext2spice cthresh 0 rthresh 0, this will extract the parasitic capacitances and resistances, then we will write ext2spice and enter.
+
+![WhatsApp Image 2025-07-26 at 13 27 51 (3)](https://github.com/user-attachments/assets/f4083785-49d5-4041-bd74-c86eab8f5be9)
+
+
+After we will see that spice file has been created.
+
+
+![WhatsApp Image 2025-07-26 at 13 27 51 (4)](https://github.com/user-attachments/assets/898fa5d5-ede0-4f4b-92ca-e5e3fe5e59ba)
+
+
+We will now check what's there inside the spice file.
+
+![WhatsApp Image 2025-07-26 at 13 27 51](https://github.com/user-attachments/assets/da7cb8ed-0543-4338-85a8-9e2f52d078c2)
+
+---
+## Sky130 Tech File Labs
+---
+## 1.Lab steps to create final SPICE deck using Sky130 tech
+---
+
+Let us try to read the spice deck.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
