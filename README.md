@@ -708,26 +708,28 @@ Global Placement** occurs first.
 To **visually verify placement**, navigate to the `results/placement` folder and look for the `placement.def` file.
 Open this file in **Magic** using the same technology file (`.tech`) that was used in earlier steps.
 
-Let me know if you'd like this added to a presentation or formatted into slides.
+
+
+<img width="831" height="590" alt="Screenshot 2025-07-25 at 5 34 30 PM" src="https://github.com/user-attachments/assets/f3cfa7da-8eaf-4e5d-ac37-1a790a777ee6" />
+
+
+<img width="832" height="589" alt="Screenshot 2025-07-25 at 5 34 41 PM" src="https://github.com/user-attachments/assets/4a131fbc-4986-46b1-8165-e981cba6c92e" />
+
+
+To view our placement, invoke the same sky130A.tech file and the same merged.lef file but this time our def file will be picorv32a.placement.def
+
+
+![WhatsApp Image 2025-07-25 at 17 39 21](https://github.com/user-attachments/assets/919fbe5a-dde7-4f18-af39-967373a6272a)
+
+
+<img width="832" height="433" alt="Screenshot 2025-07-25 at 5 35 17 PM" src="https://github.com/user-attachments/assets/5c361df2-d2ca-40a1-90b4-158d6d06c454" />
 
 
 
+Zooming in we can see the placement of the standard cells in the standard cell rows
 
 
-LAB
-
-
-
-
-
-
-
-
-
-
-
-
-
+<img width="831" height="468" alt="Screenshot 2025-07-25 at 5 35 27 PM" src="https://github.com/user-attachments/assets/6293cf78-a03f-4097-9153-0d3c1455711e" />
 
 
 
@@ -1349,22 +1351,21 @@ cd OpenLane
 To get the clone, copy the clone address from reporetery and paste in openlane terminal after the command git clone. this will create the folder called "vsdstdcelldesign" in openlane directory.
 
 
+<img width="832" height="424" alt="Screenshot 2025-07-25 at 5 44 14 PM" src="https://github.com/user-attachments/assets/5c4c984a-d30c-4dbe-b7ac-81e365dfd777" />
 
 
+copy the sky130.tech file in vsdstdcelldesign directory
 
 
-lab
+<img width="834" height="441" alt="Screenshot 2025-07-25 at 5 44 38 PM" src="https://github.com/user-attachments/assets/9d68b2ad-f25d-4bf9-99c0-8cd9e73cd8b4" />
 
 
+Now to view the invereter layout
+
+<img width="832" height="166" alt="Screenshot 2025-07-25 at 5 44 52 PM" src="https://github.com/user-attachments/assets/d93ab7cf-e7dd-4e7c-8d60-812a6b291fc2" />
 
 
-
-
-
-
-
-
-
+<img width="830" height="430" alt="Screenshot 2025-07-25 at 5 45 02 PM" src="https://github.com/user-attachments/assets/faf76b6d-055b-4110-a01d-74e4ec1a1517" />
 
 
 
@@ -1504,5 +1505,243 @@ Apply Mask 4 to define the gate region.
 Carry out ion implantation using Boron ions (a P-type dopant).
 The implantation is done at a lower energy, typically around 60 keV, so the dopants stay close to the surface.
 This step ensures the channel is properly doped before the actual gate structure is built, allowing for precise threshold voltage tuning.
+
+<img width="823" height="400" alt="Screenshot 2025-07-25 at 5 48 09 PM" src="https://github.com/user-attachments/assets/4b25f507-e7b6-4b81-bd3e-396954ced477" />
+
+<img width="819" height="449" alt="Screenshot 2025-07-25 at 5 48 17 PM" src="https://github.com/user-attachments/assets/3fbf4717-302f-42c7-9c70-812f112a2817" />
+
+The same process is repeated for the N-well region as well:
+
+* This time, we use Mask 5 to define the required area.
+* Perform ion implantation using Arsenic ions (an N-type dopant).
+* The implantation is done at low energy, similar to the previous step, to control the surface doping concentration.
+This step ensures proper channel doping for PMOS transistors formed in the N-well, contributing to accurate threshold voltage control.
+
+<img width="817" height="414" alt="Screenshot 2025-07-25 at 5 48 30 PM" src="https://github.com/user-attachments/assets/fca870c9-36b7-4316-8628-74ca27699177" />
+
+<img width="821" height="482" alt="Screenshot 2025-07-25 at 5 48 42 PM" src="https://github.com/user-attachments/assets/6ce14870-88af-4b79-95ab-fd6c547632ed" />
+
+
+We will now fabricate a thick layer ~0.4 micron of polysilicon,and expose to very light Ntype (arsenic or phosphorus) layer by ion implantation for low gate resistance.
+
+<img width="808" height="352" alt="Screenshot 2025-07-25 at 5 54 24 PM" src="https://github.com/user-attachments/assets/b98e2854-c586-486d-8c06-05b1e3281075" />
+
+Then we will deposit Mask6 on top
+
+<img width="815" height="445" alt="Screenshot 2025-07-25 at 5 54 45 PM" src="https://github.com/user-attachments/assets/969a28dd-aafd-40d5-a4ac-ea2f76649aca" />
+
+
+Expose to the UV light, which washes away the exposed area, and the remaining area that was out from the photoresist is etched away.In this way we will get the polysilicon gate.
+
+
+<img width="814" height="446" alt="Screenshot 2025-07-25 at 5 54 57 PM" src="https://github.com/user-attachments/assets/3ad85ed6-1163-428c-a15c-99792616e7fa" />
+
+
+The remaining photoresist is removed. We will get the substrate, the oxide layer and controlled gate kayer of polysilicon.
+
+
+<img width="823" height="382" alt="Screenshot 2025-07-25 at 5 55 07 PM" src="https://github.com/user-attachments/assets/fedfcf9f-b254-47f2-804d-5607701984d8" />
+
+---
+## 4.Lightly doped drain (LDD) formation
+---
+
+5)LDD formation
+
+For PMOS we are tyring to build the P+,P-,N doping profile, where source is P+ doped, drain is lightly doped and substrate is N type. SImilarly for NMOS the doping profiles are N+,N-,P.
+This profile is maintained due to two reasons:
+Hot Electron effect- when device size reduces-->Electric field increases(E=V/d)-->high energy carriers break Si-Si bonds--> this energy crosses 3.2eV barrier between Si conduction band and SiO2 conduction band.
+Short channel effect- due to low devices size-->gate length is changed from 1micron to 0.5 micron-->the drain area penetrates into channel area-->difficult for gate to control current between source and drain.
+
+
+<img width="831" height="306" alt="Screenshot 2025-07-25 at 7 37 42 PM" src="https://github.com/user-attachments/assets/9f47bb5c-f041-4465-8f1c-5e8975ecffca" />
+
+
+
+
+After creating the Mask7 and creating impurity of Ntype over pwell, and due to ion implantation and by controlling the doping concentration we get the N- implants.
+
+<img width="816" height="491" alt="Screenshot 2025-07-25 at 7 38 06 PM" src="https://github.com/user-attachments/assets/28051694-f1e9-4136-84c2-4196910bccea" />
+
+
+
+Now we will create Mask8 and protect this layer and expose the other layer with Boron such a way that P- implants are created.
+
+
+<img width="826" height="500" alt="Screenshot 2025-07-25 at 7 38 31 PM" src="https://github.com/user-attachments/assets/8e351bfc-9eed-4bb5-a8ba-9aaca903547a" />
+
+
+But the actual structure will be affected by these implants, so to avoid this we will create 'side wall spacers' by depositing a thick SiO2 or Si3N4 layer on the gate terminal.Then doing the Plasma anisotropic Etching to remove the oxide layer. This etching does not remove side walls, there it will create "side wall spacers'.
+
+
+
+<img width="833" height="344" alt="Screenshot 2025-07-25 at 7 38 52 PM" src="https://github.com/user-attachments/assets/e6d51580-d278-41f6-bfe1-0fa525d3d67d" />
+
+---
+## 5. Source and drain formation
+---
+
+6) Source and drain formation
+Before the formation of Source and Drain,a thin screen layer of oxide is deposited to avoid channeling effect.
+
+
+<img width="811" height="376" alt="Screenshot 2025-07-25 at 7 41 18 PM" src="https://github.com/user-attachments/assets/2c546d2f-d201-4941-baa7-5f38454dd580" />
+
+
+For Source and Drain formation, we deposit make Mask9 on n substrate and exposing the p substrate to Arsenic with energy ~75eV. The side wall spacers will protect the LDD so that channeling does not happen.We will get the N+ structure required.
+
+<img width="817" height="503" alt="Screenshot 2025-07-25 at 7 41 30 PM" src="https://github.com/user-attachments/assets/6a15690b-cdea-4d19-abf2-ee9963bee0d7" />
+
+
+Similarly we will mask this layer using Mask10 and expose the n substrate to Boron.
+
+
+<img width="820" height="492" alt="Screenshot 2025-07-25 at 7 43 15 PM" src="https://github.com/user-attachments/assets/1f668db2-c08e-4bec-940a-7dae10a0123c" />
+
+
+
+Now we will put the structure under high temperature for Annealing, it will push the dopants more inside the substrate and there will be uniform distribution.
+
+
+<img width="816" height="414" alt="Screenshot 2025-07-25 at 7 43 41 PM" src="https://github.com/user-attachments/assets/9f375146-9744-42a6-a36a-f7be8c7b714d" />
+
+---
+## 6. Local interconnect formation
+---
+
+7) Steps to form contacts and interconnects(local)
+Contacts are really important, as these are the only users a user can connect to the circuit.For thsi first we will etch out the thin oxide layer for avoiding channeling effect using HF.
+
+<img width="820" height="345" alt="Screenshot 2025-07-25 at 7 47 26 PM" src="https://github.com/user-attachments/assets/5f543867-776f-47f2-87bf-66f8cd27af21" />
+
+
+
+For creating local interconnects, first we will deposit Titanium suing sputtering process all over the substrate.
+
+
+<img width="817" height="368" alt="Screenshot 2025-07-25 at 7 47 53 PM" src="https://github.com/user-attachments/assets/3a396931-7956-49cc-8156-4e4b5c50c338" />
+
+
+Next step is to create the connects between titanium and source drain. This is done by heating the wafer at an ambient temperature of 600-700 degreese celcius under N2 gas for 60sec. This will result in TiSi2(a low resistive metal contact on gate) contacts created on source and drain. Also TiN layer will be formed, it is used only for local communication.
+
+
+<img width="823" height="391" alt="Screenshot 2025-07-25 at 7 48 15 PM" src="https://github.com/user-attachments/assets/c73f61ef-d30e-419f-8570-61f3d5933f2a" />
+
+
+To bring up the required contacts on top, we will put Mask11 and etch out the area we want to be coming out. We want Source, Drain and Gate area to be coming out.
+
+<img width="819" height="530" alt="Screenshot 2025-07-25 at 7 48 41 PM" src="https://github.com/user-attachments/assets/8d2f582f-1fce-4208-886d-3f3b75bdf68b" />
+
+
+We will etch out the extra TiN layer using RCA cleaning.
+
+
+<img width="767" height="296" alt="Screenshot 2025-07-25 at 7 49 05 PM" src="https://github.com/user-attachments/assets/d0d4b8ee-7c50-4e5e-9309-12fb77da35f3" />
+
+
+<img width="822" height="467" alt="Screenshot 2025-07-25 at 7 49 14 PM" src="https://github.com/user-attachments/assets/fe5ab0a0-bd0e-4393-b8fb-9beb1c85d0af" />
+
+
+
+---
+## 7. Higher Level Metal Formation
+---
+
+8) Higher level metal formation
+Here we observe there is non planarity which is not good for depositing higher metal interconnects.So we will planarise this surface by using thick layer of SiO2 which is doped with phosphorus and boron. The reason of doping is that phosphorus protects the layer from reactive sodium ions and boron is used to reduce the temperature as this wafer will be exposed to certain high temperature so boron will help in reducing the temperature.
+
+<img width="827" height="429" alt="Screenshot 2025-07-25 at 7 50 53 PM" src="https://github.com/user-attachments/assets/74ea8e7a-d94b-4174-b9d2-eff42e9a055c" />
+
+
+
+
+To remove th hills and bumps we do polishing, CMP.
+
+<img width="816" height="391" alt="Screenshot 2025-07-25 at 7 51 23 PM" src="https://github.com/user-attachments/assets/5845e432-d338-4ec6-8e8a-30834dce0c5d" />
+
+
+
+Next is creating the metal contacts by drilling, so this also done by photlithography technique. By using Mask12.
+
+<img width="819" height="434" alt="Screenshot 2025-07-25 at 7 51 41 PM" src="https://github.com/user-attachments/assets/f9001548-ae79-44d3-9fbe-2ee32d219557" />
+
+
+
+Now we will remove the mask by washing away the photoresist. We will create thin layer ~10nm of TiN, it acts as Adhesion layer between SiO2 and acts a barrier layer for bottom and top interconnects.
+
+<img width="810" height="455" alt="Screenshot 2025-07-25 at 7 51 59 PM" src="https://github.com/user-attachments/assets/d0461224-92c1-4628-91fe-3afc2d361284" />
+
+
+Then we will deposit a blanket of Tungsten(W) layer, this will help to create a very good contact from bottom to top.
+
+<img width="819" height="403" alt="Screenshot 2025-07-25 at 7 52 15 PM" src="https://github.com/user-attachments/assets/e463aa01-d570-466e-9f9a-6b2c6f53dcd1" />
+
+
+NExt, is CMP, removing the extra tungsten from top
+
+<img width="825" height="409" alt="Screenshot 2025-07-25 at 7 52 33 PM" src="https://github.com/user-attachments/assets/c4d7ba22-e73a-4178-b9b3-e4afe4ae0842" />
+
+Now we will deposit metal Aluminium layer on top to take the metal contacts above. Further we will mask to expose the specific areas.
+
+<img width="821" height="441" alt="Screenshot 2025-07-25 at 7 53 07 PM" src="https://github.com/user-attachments/assets/fcf23639-f8f6-4dd4-8db9-23749c8fd7d3" />
+
+<img width="828" height="414" alt="Screenshot 2025-07-25 at 7 53 15 PM" src="https://github.com/user-attachments/assets/7a1e75e2-648e-4242-8f4f-9fcd929a2a0c" />
+
+We got the first layer of metal interconnect below.
+
+
+<img width="815" height="422" alt="Screenshot 2025-07-25 at 7 54 56 PM" src="https://github.com/user-attachments/assets/fcc8680a-15e5-4e13-a8b0-c646d5b2825f" />
+
+We will repeat the above processes to get further layer of metal interconnects.
+
+<img width="835" height="416" alt="Screenshot 2025-07-26 at 12 12 50 PM" src="https://github.com/user-attachments/assets/6dbaec83-34ba-40e6-8e97-32a7464f3370" />
+
+
+
+<img width="825" height="423" alt="Screenshot 2025-07-26 at 12 13 02 PM" src="https://github.com/user-attachments/assets/e16fd9c2-bc5d-4dac-9192-2b286ad57863" />
+
+
+After Mask14 again a thin layer or TiN is deposited.
+
+
+<img width="818" height="433" alt="Screenshot 2025-07-26 at 12 13 31 PM" src="https://github.com/user-attachments/assets/a6c87047-2833-4ae2-88f6-7ad406f334dc" />
+
+
+Now agaian depositing Tungsten(W) on top.
+
+
+<img width="824" height="422" alt="Screenshot 2025-07-26 at 12 13 52 PM" src="https://github.com/user-attachments/assets/2763880a-074f-4931-8ef1-db2bdbf1e0cc" />
+
+
+
+Now we will deposit the third layer of interconnect using Mask15. Also the thickness is more than the bottom layer. When we go from bottom to top the thickness of metal layers increase.
+
+
+
+<img width="843" height="439" alt="Screenshot 2025-07-26 at 12 14 22 PM" src="https://github.com/user-attachments/assets/87a4414a-1b5e-4ae5-a199-050eb82e58da" />
+
+
+After this we will deposit the Si3N4 layer, we use Si3N4 to protect the chip as this is a good protectant layer from the outside world.
+
+<img width="835" height="428" alt="Screenshot 2025-07-26 at 12 14 48 PM" src="https://github.com/user-attachments/assets/0936d777-01c8-42e1-8a15-1e98c7c8446a" />
+
+
+
+Finally, we will use Mask16 to drill out the final contacts outside.
+
+<img width="818" height="565" alt="Screenshot 2025-07-26 at 12 15 20 PM" src="https://github.com/user-attachments/assets/034642ad-d70c-498a-bdcb-56902b325da9" />
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
