@@ -2651,13 +2651,14 @@ These steps prepare the design and enable OpenSTA setup for **post-synthesis tim
 
 ![WhatsApp Image 2025-07-26 at 18 09 26](https://github.com/user-attachments/assets/fd02819c-c4d3-4ed3-9490-24827fd7c95b)
 
-![WhatsApp Image 2025-07-26 at 18 09 27 (4)](https://github.com/user-attachments/assets/3f01a80e-5e50-428e-a5af-bb1bdf087436)
-
 
 Now, we need to create a new pre_sta.conf file under openlane folder using text editor or simply vim editor.
 
 
 ![WhatsApp Image 2025-07-26 at 18 09 27 (2)](https://github.com/user-attachments/assets/c8b87420-2f65-4678-9c0d-6ff7567cd0ad)
+
+
+<img width="1137" height="542" alt="Screenshot 2025-07-26 at 6 42 53 PM" src="https://github.com/user-attachments/assets/e155fa49-7798-4631-ad52-aa6e98d21617" />
 
 Under the folder /openlane/designs/picorv32a/src/, we need to create the file my_base.sdc.
 
