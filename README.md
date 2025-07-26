@@ -2124,13 +2124,111 @@ The contents of the .lef file generated is shown below
 
 ![WhatsApp Image 2025-07-26 at 15 59 52](https://github.com/user-attachments/assets/338d5ec7-311d-4f3d-af4b-59f05d46c944)
 
+---
+## Introduction to timing libs and steps to include new cell in synthesis
+---
+
+Now that the .lef file has been generated, the next step is to integrate it into picorv32a. Before proceeding, the file needs to be moved to the src folder, where all the design files are located in one place.
+
+To do this, use the cp command to copy the file:
+```tcl
+cp sky130_vsdinv.lef /home/vsduser/Desktop/work/tools/openlane_working_dir/openlane/design/picorv32a/src
+```
+This will place the .lef file into the src directory, ready to be used in the picorv32a design flow.
 
 
+![WhatsApp Image 2025-07-26 at 16 15 33 (1)](https://github.com/user-attachments/assets/300c69ca-9eab-4e99-8637-259e3041e8cd)
 
 
+Now, we need to include the custom cell in the OpenLane flow, and the first step in the OpenLane flow is synthesis.
+
+During the synthesis process, the ABC step maps the netlist to the cells present in the library. Therefore, it is necessary to have a library that includes the definition of our custom cell for successful synthesis.
+
+To proceed, open the library file as shown in the image below and verify that the custom cell entry is present in it.
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (1)](https://github.com/user-attachments/assets/b8bb37e3-755a-4567-a598-7b43fc8989f6)
+
+below are the contents of sky130_fc_sc_hd_typical.lib
+
+![WhatsApp Image 2025-07-26 at 16 15 33 (2)](https://github.com/user-attachments/assets/535c74ab-34ae-463e-a7c6-9a4b9daaaa7a)
 
 
+![WhatsApp Image 2025-07-26 at 16 15 33 (3)](https://github.com/user-attachments/assets/0691555c-b749-444d-845f-a0d452067c32)
 
+
+![WhatsApp Image 2025-07-26 at 16 15 33 (4)](https://github.com/user-attachments/assets/6f7825a3-f34c-4ea8-81c7-4695e92fe366)
+
+
+![WhatsApp Image 2025-07-26 at 16 15 34](https://github.com/user-attachments/assets/e77604bf-2fec-4b58-84d4-d8ffc2b645d2)
+
+
+ Library Files in OpenLane
+
+This is how the library file appears. Multiple library files are usually available, categorized based on **process corners** such as:
+
+* **Typical** – Standard or nominal process, voltage, and temperature conditions.
+* **Slow** – Worst-case slow silicon performance.
+* **Fast** – Best-case fast silicon performance.
+
+Our **custom cell** must be added to **all relevant libraries** to ensure it is available across all corners during synthesis and the later stages of the OpenLane flow.
+
+
+### Next Step
+
+We will now **copy all the libraries into the `src` folder**.
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (1)](https://github.com/user-attachments/assets/383bfb28-c5a0-487a-84d5-f703e126a768)
+
+Here, we need to modify the config.tcl file located in the picorv32a directory.
+
+Open the config.tcl file and add the commands shown in the image below. These commands are necessary to include the custom cell in the OpenLane flow, allowing the synthesis and implementation process to recognize and use the newly created cell.
+
+before addition:
+
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (2)](https://github.com/user-attachments/assets/b1ab500c-cd83-43f2-98de-bf5252e7a382)
+
+
+after addition:
+
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (3)](https://github.com/user-attachments/assets/d963c0c7-490a-4545-ab9e-fb1baa8fb8c9)
+
+
+### OPENLANE
+
+Go to the **OpenLane** directory and run the Docker command.
+
+Then, execute the following commands sequentially **in the same session**:
+
+```tcl
+./flow.tcl -interactive
+package require openlane 0.9
+prep -design picorv32a -tag "latest directory name that I have in my runs folder" -overwrite
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+add_lefs -src $lefs
+run_synthesis
+```
+
+This process prepares the design, adds the custom `.lef` files to the flow, and starts the **synthesis step** for the `picorv32a` design.
+
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (4)](https://github.com/user-attachments/assets/5c26bc8f-894f-4071-b141-a408a0b58b44)
+
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (5)](https://github.com/user-attachments/assets/7f815f32-9912-4f4d-b774-9a1c817afc47)
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (7)](https://github.com/user-attachments/assets/59b58bad-de48-49ab-95fc-894b83f7163a)
+
+some results of synthesis
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (7)](https://github.com/user-attachments/assets/5831f3e5-7b22-4a81-90be-45d5338fea4c)
+
+
+![WhatsApp Image 2025-07-26 at 16 15 34 (6)](https://github.com/user-attachments/assets/e4e577da-7822-4016-b8a5-397be53ad87b)
+
+
+we see a huge slack violation in the synthesis stage itself. So now we have to correct this slack violation.
 
 
 
